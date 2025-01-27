@@ -10,7 +10,7 @@ const int CELL_SIZE = 80;
 const int WINDOW_WIDTH = BOARD_SIZE * CELL_SIZE;
 const int WINDOW_HEIGHT = BOARD_SIZE * CELL_SIZE;
 
- 
+bool showmove=false;
 	vector<pair<int, int>> startlocation  = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 	                                        ,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2}, 
 	                                              {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
