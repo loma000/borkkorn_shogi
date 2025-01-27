@@ -81,12 +81,12 @@ int main()
 			{
 				 if (e.type == sf::Event::MouseButtonPressed) {
 				if (e.mouseButton.button == sf::Mouse::Left) {
-					// Check if the mouse click is within the sprite bounds
+					 
 					sf::FloatRect spriteBounds = f[i].getGlobalBounds();
 					if (spriteBounds.contains(e.mouseButton.x, e.mouseButton.y)) {
-						// Action when sprite is clicked
+						 
 						std::cout << "Sprite clicked!" << std::endl;
-						f[i].setColor(sf::Color::Red); // Example action: change sprite color
+						f[i].setColor(sf::Color::Red);  
 					}
 				}
 			}
