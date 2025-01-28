@@ -32,7 +32,7 @@ bool showmove = false;
 	
 	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8
 						   };
-
+	Sprite atk[81];
 	Sprite f[40];
 	Sprite mvt[81];
 void loadsprite() {
@@ -58,6 +58,7 @@ void loadtile() {
 	{ 
 		for (int j = 0; j < 9; j++)
 		{
+			atk[k].setPosition(size * j, size * i);
           mvt[k].setPosition(size * j, size * i);
 		  k++;
 		}
@@ -67,27 +68,43 @@ void loadtile() {
 
 
 }
-bool check(int x, int y, int id) {
-	bool walkcheck, occupied;
-	if (mark[id].first == "rook") {
-		if(mark[id].second=="black")walkcheck=  x == startlocation[id].first   && y == startlocation[id].second+1 ? true : false;
-		if (mark[id].second == "white")walkcheck= x == startlocation[id].first   && y == startlocation[id].second -1? true : false;
+bool walkcheck(int x, int y, int id) {
+	bool walkcheck;
+		if (mark[id].first == "rook") {
+			if (mark[id].second == "black")walkcheck = x == startlocation[id].first && y == startlocation[id].second + 4 ? true : false;
+			if (mark[id].second == "white")walkcheck = x == startlocation[id].first && y == startlocation[id].second - 4 ? true : false;
+		}
 		
+ 
+
+
+
+
+
+
+
+
+	 
+
+
+
+
+
+	return walkcheck ;
+
 }
+bool  occupiedcheck(int x, int y, int id) {
+	bool   occupied;
+	 
 
 
 
-
-
-
-
-
-
-	for (int i = 0; i <40; i++)
+	for (int i = 0; i < 40; i++)
 	{
 		if (x == startlocation[i].first && y == startlocation[i].second) {
-			occupied = false;  
-				break;
+			 
+				occupied = false;
+			break;
 		}
 		else occupied = true;
 
@@ -95,25 +112,42 @@ bool check(int x, int y, int id) {
 
 
 
-
-
-
-	return walkcheck&&occupied?true:false;
+	return  occupied ;
 
 }
  
+bool enermycheck(int x, int y,   int id) {
+	bool enermy;
 
+
+	for (int i = 0; i < 40; i++)
+	{
+		 
+		if (mark[i] != mark[id]&& x == startlocation[i].first && y == startlocation[i].second) {
+			enermy = true;
+			break;
+		}
+		
+		else enermy = false;
+
+	}
+
+
+	return enermy;
+
+}
 
 
 int main()
 {
 	int size = 48; int count=0;
 	Texture moveabletile;
+	Texture attacktile;
 	int current=0;
 	RenderWindow window( VideoMode(431, 431), "maibork");
 	Texture item;
 	Texture board;
-	
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
 	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
 	
 	item.loadFromFile( rook );
@@ -127,6 +161,7 @@ int main()
 	for (int i = 0; i < 81; i++)
 	{
 		 mvt[i].setTexture(moveabletile);
+		 atk[i].setTexture(attacktile);
 
 	}
 	loadsprite();
@@ -216,7 +251,11 @@ int main()
 		//draw
     window.clear();
 	window.draw(b);
+for (int i = 0; i < 40; i++)
+	{
+		window.draw(f[i]);
 
+	}
 	if (showmove)
 	{
 
@@ -225,9 +264,13 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (check(j, i, current)) {
+			if (walkcheck(j, i, current)&&!enermycheck(j, i, current) ) {
 				 
 				window.draw(mvt[i * 9 + j]);  
+			}
+			else if(enermycheck(j, i, current)&& walkcheck(j, i, current))
+			{
+				window.draw(atk[i * 9 + j]);
 			}
 
 
@@ -239,11 +282,7 @@ for (int i = 0; i < 9; i++)
 
 	//cout << current<<showmove;
 
-	for (int i = 0; i < 40; i++)
-	{
-		window.draw(f[i]);
-
-	}
+	
 	window.display(); 
 
 
