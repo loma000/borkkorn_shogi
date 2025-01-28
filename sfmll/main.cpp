@@ -67,12 +67,40 @@ void loadtile() {
 
 
 }
-bool check(  int x, int y, int id) {
+bool check(int x, int y, int id) {
+	bool walkcheck, occupied;
 	if (mark[id].first == "rook") {
-		if(mark[id].second=="black")return  y == startlocation[id].first   && x == startlocation[id].second+1 ? true : false;
-		if (mark[id].second == "white")return  y == startlocation[id].first   && x == startlocation[id].second -1? true : false;
+		if(mark[id].second=="black")walkcheck=  x == startlocation[id].first   && y == startlocation[id].second+1 ? true : false;
+		if (mark[id].second == "white")walkcheck= x == startlocation[id].first   && y == startlocation[id].second -1? true : false;
 		
-} }
+}
+
+
+
+
+
+
+
+
+
+	for (int i = 0; i <40; i++)
+	{
+		if (x == startlocation[i].first && y == startlocation[i].second) {
+			occupied = false;  
+				break;
+		}
+		else occupied = true;
+
+	}
+
+
+
+
+
+
+	return walkcheck&&occupied?true:false;
+
+}
  
 
 
@@ -197,9 +225,9 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (check(i, j, current)) {
+			if (check(j, i, current)) {
 				 
-				window.draw(mvt[i*9+j]);
+				window.draw(mvt[i * 9 + j]);  
 			}
 
 
