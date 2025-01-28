@@ -78,7 +78,8 @@ bool check(  int x, int y, int id) {
 
 
 int main()
-{ int size = 48;
+{
+	int size = 48; int count=0;
 	Texture moveabletile;
 	int current=0;
 	RenderWindow window( VideoMode(431, 431), "maibork");
@@ -118,11 +119,21 @@ int main()
 
 
 				if (e.mouseButton.button == sf::Mouse::Left ) {
+					if (showmove)
+					{
+						 
+						showmove = false;
+					}
+					for (int i = 0; i < 40; i++)
+					{
+						f[i].setColor(sf::Color::White);
+
+					}
 					
 			for (int i = 0; i < 40; i++)
 			{ 
 					sf::FloatRect spriteBounds = f[i].getGlobalBounds();
-					if (spriteBounds.contains(e.mouseButton.x, e.mouseButton.y) && !showmove) {
+					if (spriteBounds.contains(e.mouseButton.x, e.mouseButton.y) && !showmove ) {
 						current = i;
 						showmove = true;
 						cout << startlocation[i].first << "," << startlocation[i].second << " " << mark[i].first << " " << mark[i].second << " " << current << endl;
@@ -132,13 +143,21 @@ int main()
 
 					}
 					}
+
+			 
+
+
+
+
+
 				}
+
 
 				
 			}
 		 
 
-		 if (e.type == sf::Event::KeyPressed) {
+		 /*if (e.type == sf::Event::KeyPressed) {
 					if (e.key.code == sf::Keyboard::Space) {
 						if (showmove)
 						{
@@ -151,7 +170,7 @@ int main()
 						}
 					}
 				}
-			
+			*/
 
 
 
@@ -190,7 +209,7 @@ for (int i = 0; i < 9; i++)
 	 
 	
 
-	cout << current<<showmove;
+	//cout << current<<showmove;
 
 	for (int i = 0; i < 40; i++)
 	{
