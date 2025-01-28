@@ -24,10 +24,10 @@ bool showmove=false;
 
 	string rook = "C:/Users/Loma/Desktop/shogi/pawn.png";
 
-	vector<pair<string, string>>mark = { {"rook","white" }};
+	vector<pair<string, string>>mark = {{"rook","white" }};
 	
-	vector<int> pawnid = { 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8,
-						   -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8 };
+	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8
+						   };
 
 	Sprite f[40];
 	
@@ -38,7 +38,7 @@ void loadsprite() {
 	{
 		int n =  pawnid[i];
 		int x = abs(n) - 1;
-		int y =  n>0?0:1;
+		int y =  n>0?1:0;
 		f[i].setTextureRect(IntRect(size * x, size * y, size, size));
 		f[i].setPosition(size*startlocation[i].first, size * startlocation[i].second );
 	}
@@ -85,7 +85,7 @@ int main()
 					sf::FloatRect spriteBounds = f[i].getGlobalBounds();
 					if (spriteBounds.contains(e.mouseButton.x, e.mouseButton.y)) {
 						 
-						std::cout << "Sprite clicked!" << std::endl;
+						 cout << startlocation[i].first<<","<<startlocation[i].second << endl;
 						f[i].setColor(sf::Color::Red);  
 					}
 				}
