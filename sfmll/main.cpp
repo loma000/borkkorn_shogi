@@ -12,10 +12,10 @@ const int WINDOW_WIDTH = BOARD_SIZE * CELL_SIZE;
 const int WINDOW_HEIGHT = BOARD_SIZE * CELL_SIZE;
 
 bool showmove = false;
-	vector<pair<int, int>> startlocation  = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
-	                                        ,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2}, 
-	                                              {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
-											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6}};
+vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
+										,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
+											  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
+										,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6}  };
 	 
 	
 	vector<pair<int, int>> endlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
@@ -27,12 +27,40 @@ bool showmove = false;
 
 	vector<pair<string, string>>mark = { {"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" }
 	,{ "rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },
-		{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"} 
-	,{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"} };
+		{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"}
+	,{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"}  };
 	
-	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8
+	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8 
 						   };
 	Sprite atk[81];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	Sprite f[40];
 	Sprite mvt[81];
 void loadsprite() {
@@ -169,34 +197,25 @@ int main()
 	while (window.isOpen())
 	{
 
-		Event e;
-		while (window.pollEvent(e))
+		Event event;
+		while (window.pollEvent(event))
 		{
-			if (e.type == Event::Closed)
+			if (event.type == Event::Closed)
 				window.close();
 
 
-				 if (e.type == sf::Event::MouseButtonPressed) {
+				 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
-					 
-
-
-				if (e.mouseButton.button == sf::Mouse::Left ) {
-					if (showmove)
+					 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+				          if (showmove)
 					{
 						 
 						showmove = false;
-					}
-					for (int i = 0; i < 40; i++)
-					{
-						f[i].setColor(sf::Color::White);
+					}for (int i = 0; i < 40; i++)
+			{
 
-					}
-					
-			for (int i = 0; i < 40; i++)
-			{ 
-					sf::FloatRect spriteBounds = f[i].getGlobalBounds();
-					if (spriteBounds.contains(e.mouseButton.x, e.mouseButton.y) && !showmove ) {
+					 
+					if (f[i].getGlobalBounds().contains(mousePos) && !showmove) {
 						current = i;
 						showmove = true;
 						cout << startlocation[i].first << "," << startlocation[i].second << " " << mark[i].first << " " << mark[i].second << " " << current << endl;
@@ -207,13 +226,59 @@ int main()
 					}
 					}
 
+
+				 for (int i = 0; i < 40; i++)
+					{
+						f[i].setColor(sf::Color::White);
+
+					}
+				
+					
+					for (int j = 0; j < 81; j++)
+					{
+						 
+						if ( atk[j].getGlobalBounds().contains(mousePos)) {
+							Vector2f position = atk[j].getPosition();
+							startlocation[current].first = (position.x) / size;
+							startlocation[current].second = (position.y) / size;
+							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+						};
+
+						
+					}
+
+					for (int k = 0; k < 81; k++)
+					{
+						 
+						if (mvt[k].getGlobalBounds().contains(mousePos)) {
+							Vector2f position = mvt[k].getPosition();
+							startlocation[current].first = (position.x) / size;
+							startlocation[current].second = (position.y) / size;
+							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+
+
+
+						}
+					}
+
+
+
+
+	
+
+
+
+
+
+
+			
 			 
 
 
 
 
 
-				}
+				 
 
 
 				
