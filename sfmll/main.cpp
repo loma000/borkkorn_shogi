@@ -273,7 +273,7 @@ int main()
 			{
 
 					 
-					if (f[i].getGlobalBounds().contains(mousePos) && !showmove) {
+					if (f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0) {
 						current = i;
 						showmove = true;
 						spriteMoved = false;
