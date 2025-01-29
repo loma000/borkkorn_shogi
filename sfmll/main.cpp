@@ -37,7 +37,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 	int  show[81];
-
+	int dead[40];
 
 
 
@@ -217,13 +217,23 @@ int main()
 						 
 						if ( atk[j].getGlobalBounds().contains(mousePos)&&show[j] == 1) {
 							Vector2f position = atk[j].getPosition();
-							startlocation[current].first = (position.x) / size;
-							startlocation[current].second = (position.y) / size;
+							int x = int(position.x) / size;
+							int y = int(position.y) / size;
+							for (int i = 0; i < 40; i++)
+							{
+								if (x == startlocation[i].first && y == startlocation[i].second) { dead[i] = 1; break; }
+							}
+
+							startlocation[current].first = x;
+							startlocation[current].second = y;
+
+
 							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							show[j] = 0;
 							cout << "isclick";
 							cout << j;
 							spriteMoved = true;
+							
 							
 							break;
 						};
@@ -276,7 +286,7 @@ int main()
 						showmove = false;
 						 
 						 
-
+						break;
 
 						 
 					}
@@ -346,7 +356,7 @@ int main()
     window.clear();
 window.draw(b);
 for (int i = 0; i < 40; i++)
-	{
+	{if(dead[i]==0)
 		window.draw(f[i]);
 
 	}
