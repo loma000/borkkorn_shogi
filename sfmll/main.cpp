@@ -36,7 +36,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 
-
+	int  show[81];
 
 
 
@@ -215,14 +215,14 @@ int main()
 					for (int j = 0; j < 81; j++)
 					{
 						 
-						if ( atk[j].getGlobalBounds().contains(mousePos) ) {
+						if ( atk[j].getGlobalBounds().contains(mousePos)&&show[j] == 1) {
 							Vector2f position = atk[j].getPosition();
 							startlocation[current].first = (position.x) / size;
 							startlocation[current].second = (position.y) / size;
 							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-							 
+							show[j] = 0;
 							cout << "isclick";
-							
+							cout << j;
 							spriteMoved = true;
 							
 							break;
@@ -237,15 +237,15 @@ int main()
 					for (int k = 0; k < 81; k++)
 					{
 						 
-						if (mvt[k].getGlobalBounds().contains(mousePos)  ) {
+						if (mvt[k].getGlobalBounds().contains(mousePos) &&show[k]==1) {
 							Vector2f position = mvt[k].getPosition();
 							startlocation[current].first = (position.x) / size;
 							startlocation[current].second = (position.y) / size;
 							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-							
-							 
-cout << "isclick";
-spriteMoved =true;
+							cout << k;
+							show[k] = 0;
+							cout << "isclick";
+							spriteMoved = true;
 							 break;
 
 						}
@@ -271,14 +271,14 @@ spriteMoved =true;
 
 						
 						break;
-					}else if (f[i].getGlobalBounds().contains(mousePos)|| b.getGlobalBounds().contains(mousePos) &&  showmove) {
+					}  if (  showmove) {
 						 
 						showmove = false;
 						 
 						 
 
 
-						break;
+						 
 					}
 					} 
 
@@ -339,7 +339,7 @@ spriteMoved =true;
 
 		}
 
-cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
+//cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
 
 
 		//draw
@@ -359,11 +359,12 @@ for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
 		{
 			if (walkcheck(j, i, current)&&!enermycheck(j, i, current) ) {
-				 
+				show[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
 			else if(enermycheck(j, i, current)&& walkcheck(j, i, current))
 			{
+				show[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
 			}
 
