@@ -177,7 +177,7 @@ int main()
 	Texture board;
 	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
 	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
-	
+	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
 	Sprite b(board);
@@ -207,24 +207,80 @@ int main()
 				 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
 					 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-				          if (showmove)
+				     
+					  if (!spriteMoved&&showmove)
+				 {
+
+				 
+					for (int j = 0; j < 81; j++)
 					{
 						 
-						showmove = false;
-					}for (int i = 0; i < 40; i++)
+						if ( atk[j].getGlobalBounds().contains(mousePos) ) {
+							Vector2f position = atk[j].getPosition();
+							startlocation[current].first = (position.x) / size;
+							startlocation[current].second = (position.y) / size;
+							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							 
+							cout << "isclick";
+							
+							spriteMoved = true;
+							
+							break;
+						};
+
+						
+					}}
+				 if (!spriteMoved && showmove)
+				 {
+
+				 
+					for (int k = 0; k < 81; k++)
+					{
+						 
+						if (mvt[k].getGlobalBounds().contains(mousePos)  ) {
+							Vector2f position = mvt[k].getPosition();
+							startlocation[current].first = (position.x) / size;
+							startlocation[current].second = (position.y) / size;
+							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							
+							 
+cout << "isclick";
+spriteMoved =true;
+							 break;
+
+						}
+					}
+}
+
+
+					 
+					
+					 
+					
+
+					 
+					 for (int i = 0; i < 40; i++)
 			{
 
 					 
 					if (f[i].getGlobalBounds().contains(mousePos) && !showmove) {
 						current = i;
 						showmove = true;
-						cout << startlocation[i].first << "," << startlocation[i].second << " " << mark[i].first << " " << mark[i].second << " " << current << endl;
+						spriteMoved = false;
 						f[i].setColor(sf::Color::Red);
 
+						
+						break;
+					}else if (f[i].getGlobalBounds().contains(mousePos)|| b.getGlobalBounds().contains(mousePos) &&  showmove) {
+						 
+						showmove = false;
+						 
 						 
 
+
+						break;
 					}
-					}
+					} 
 
 
 				 for (int i = 0; i < 40; i++)
@@ -233,40 +289,13 @@ int main()
 
 					}
 				
-					
-					for (int j = 0; j < 81; j++)
-					{
-						 
-						if ( atk[j].getGlobalBounds().contains(mousePos)) {
-							Vector2f position = atk[j].getPosition();
-							startlocation[current].first = (position.x) / size;
-							startlocation[current].second = (position.y) / size;
-							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-						};
-
-						
-					}
-
-					for (int k = 0; k < 81; k++)
-					{
-						 
-						if (mvt[k].getGlobalBounds().contains(mousePos)) {
-							Vector2f position = mvt[k].getPosition();
-							startlocation[current].first = (position.x) / size;
-							startlocation[current].second = (position.y) / size;
-							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-
-
-
-						}
-					}
-
-
+				
 
 
 	
 
-
+ 
+					 
 
 
 
@@ -310,12 +339,12 @@ int main()
 
 		}
 
-
+cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
 
 
 		//draw
     window.clear();
-	window.draw(b);
+window.draw(b);
 for (int i = 0; i < 40; i++)
 	{
 		window.draw(f[i]);
@@ -347,7 +376,7 @@ for (int i = 0; i < 9; i++)
 
 	//cout << current<<showmove;
 
-	
+		
 	window.display(); 
 
 
