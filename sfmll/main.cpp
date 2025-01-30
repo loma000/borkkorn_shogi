@@ -97,28 +97,44 @@ void loadtile() {
 
 }
 bool walkcheck(int x, int y, int id) {
-	bool walkcheck;
-		if (mark[id].first == "rook") {
-			if (mark[id].second == "black")walkcheck = x == startlocation[id].first && y == startlocation[id].second + 1 ? true : false;
-			if (mark[id].second == "white")walkcheck = x == startlocation[id].first && y == startlocation[id].second - 1 ? true : false;
-		}
-		
- 
+	string piece = mark[id].first;
+	string color = mark[id].second;
+	int sx = startlocation[id].first, sy = startlocation[id].second;
 
+	// Direction modifier (1 for black, -1 for white)
+	int dir = (color == "black") ? 1 : -1;
 
-
-
-
-
-
-
-	 
-
-
-
-
-
-	return walkcheck ;
+	if (piece == "pawn" && ispromoted[id] == 0) {
+		return (x == sx + dir && y == sy);
+	}
+	if (piece == "lance" && ispromoted[id] == 0) {
+		return (x > sx && y == sy && color == "black") || (x < sx && y == sy && color == "white");
+	}
+	if (piece == "knight" && ispromoted[id] == 0) {
+		return (x == sx + 2 * dir && (y == sy + 1 || y == sy - 1));
+	}
+	if (piece == "silver" && ispromoted[id] == 0) {
+		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) || (x == sx - 1 && (y == sy - 1 || y == sy + 1));
+	}
+	if (piece == "gold" && ispromoted[id] == 0 || piece == "tokin" && ispromoted[id] == 0 || piece == "silver" && ispromoted[id] == 1 || piece == "knight" && ispromoted[id] == 1 || piece == "lance" && ispromoted[id] == 1) {
+		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) || (x == sx && (y == sy - 1 || y == sy + 1)) || (x == sx - dir && y == sy);
+	}
+	if (piece == "bishop" && ispromoted[id] == 0) {
+		return abs(x - sx) == abs(y - sy);
+	}
+	if (piece == "rook" && ispromoted[id] == 0) {
+		return (x == sx || y == sy);
+	}
+	if (piece == "king" && ispromoted[id] == 0) {
+		return abs(x - sx) <= 1 && abs(y - sy) <= 1;
+	}
+	if (piece == "bishop"&&ispromoted[id]==1) {
+		return abs(x - sx) == abs(y - sy) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
+	}
+	if (piece == "rook" && ispromoted[id] == 1) {
+		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
+	}
+	return false;  // Invalid move
 
 }
 bool  occupiedcheck(int x, int y, int id) {
