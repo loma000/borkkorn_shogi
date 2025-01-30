@@ -38,7 +38,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 	int  show[81];
 	int dead[40];
-
+	int ispromoted[40];
 
 
 
@@ -99,8 +99,8 @@ void loadtile() {
 bool walkcheck(int x, int y, int id) {
 	bool walkcheck;
 		if (mark[id].first == "rook") {
-			if (mark[id].second == "black")walkcheck = x == startlocation[id].first && y == startlocation[id].second + 4 ? true : false;
-			if (mark[id].second == "white")walkcheck = x == startlocation[id].first && y == startlocation[id].second - 4 ? true : false;
+			if (mark[id].second == "black")walkcheck = x == startlocation[id].first && y == startlocation[id].second + 1 ? true : false;
+			if (mark[id].second == "white")walkcheck = x == startlocation[id].first && y == startlocation[id].second - 1 ? true : false;
 		}
 		
  
@@ -144,27 +144,47 @@ bool  occupiedcheck(int x, int y, int id) {
 
 }
  
-bool enermycheck(int x, int y,   int id) {
-	bool enermy;
+string enermycheck(int x, int y,   int id) {
+	string enermy;
 
 
 	for (int i = 0; i < 40; i++)
 	{
 		 
-		if (mark[i] != mark[id]&& x == startlocation[i].first && y == startlocation[i].second) {
-			enermy = true;
+		if (mark[i].second != mark[id].second&& x == startlocation[i].first && y == startlocation[i].second) {
+			enermy = "enemy";
+			break;
+		}
+		else if(mark[i].second  == mark[id].second && x == startlocation[i].first && y == startlocation[i].second)
+		{
+			enermy = "ally";
 			break;
 		}
 		
-		else enermy = false;
-
+		else {
+			enermy = "null";
+			 
+		}
 	}
 
-
+	
 	return enermy;
 
 }
+void promoted(int id) {
+	 
 
+	if ( startlocation[id].second >= 6 && mark[id].second == "black"|| startlocation[id].second <= 2 && mark[id].second == "white")
+	{
+		ispromoted[id] = 1;
+	}
+	 
+	
+
+
+
+
+}
 
 int main()
 {
@@ -229,9 +249,11 @@ int main()
 
 
 							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							promoted(current);
+							cout << current << " " << ispromoted[current] << endl;
 							show[j] = 0;
 							cout << "isclick";
-							cout << j;
+							 
 							spriteMoved = true;
 							
 							
@@ -252,7 +274,8 @@ int main()
 							startlocation[current].first = (position.x) / size;
 							startlocation[current].second = (position.y) / size;
 							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-							cout << k;
+							promoted(current);
+							cout << current<<" "<<ispromoted[current] << endl;
 							show[k] = 0;
 							cout << "isclick";
 							spriteMoved = true;
@@ -277,7 +300,7 @@ int main()
 						current = i;
 						showmove = true;
 						spriteMoved = false;
-						f[i].setColor(sf::Color::Red);
+						 
 
 						
 						break;
@@ -293,11 +316,7 @@ int main()
 					} 
 
 
-				 for (int i = 0; i < 40; i++)
-					{
-						f[i].setColor(sf::Color::White);
-
-					}
+				 
 				
 				
 
@@ -350,13 +369,25 @@ int main()
 		}
 
 //cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
+if (ispromoted[current] == 1)
+{
+	 
+			f[current].setColor(sf::Color::Red);
+
+		}
+		
+
 
 
 		//draw
     window.clear();
 window.draw(b);
 for (int i = 0; i < 40; i++)
-	{if(dead[i]==0)
+	{
+	
+	
+	
+	if(dead[i]==0)
 		window.draw(f[i]);
 
 	}
@@ -368,11 +399,15 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (walkcheck(j, i, current)&&!enermycheck(j, i, current) ) {
+			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null") {
 				show[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
-			else if(enermycheck(j, i, current)&& walkcheck(j, i, current))
+			else if(enermycheck(j, i, current)=="ally" && walkcheck(j, i, current))
+			{
+				 
+			}
+			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current))
 			{
 				show[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
