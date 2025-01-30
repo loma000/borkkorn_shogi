@@ -323,7 +323,11 @@ int main()
 					}  if (  showmove) {
 						 
 						showmove = false;
-						 
+						for (int i = 0; i < 81; i++)
+						{
+							show[i] = 0;
+
+						}
 						 
 						break;
 
