@@ -63,6 +63,36 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 	Sprite f[40];
 	Sprite mvt[81];
+
+	bool isPathBlocked(int x, int y, int id) {
+		string piece = mark[id].first;
+		int sx = startlocation[id].first, sy = startlocation[id].second;
+
+		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance
+		if (piece == "rook" || piece == "bishop" || (piece == "lance" && ispromoted[id] == 0) ||
+			(piece == "bishop" && ispromoted[id] == 1) || (piece == "rook" && ispromoted[id] == 1)) {
+
+			int dx = (x > sx) ? 1 : (x < sx) ? -1 : 0;
+			int dy = (y > sy) ? 1 : (y < sy) ? -1 : 0;
+
+			int cx = sx + dx, cy = sy + dy;
+
+			while (cx != x || cy != y) {
+				for (int i = 0; i < 40; i++) {
+					if (startlocation[i].first == cx && startlocation[i].second == cy && dead[i] == 0) {
+						return true; // Path is blocked
+					}
+				}
+				cx += dx;
+				cy += dy;
+			}
+		}
+		return false; // Path is clear
+	}
+
+
+
+
 void loadsprite() {
 	 int size = 48;
 
@@ -419,7 +449,7 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null" ) {
+			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null"&& !isPathBlocked(j,i,current)) {
 				show[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
@@ -427,7 +457,7 @@ for (int i = 0; i < 9; i++)
 			{
 				 
 			}
-			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current) && dead[i * 9 + j]==0)
+			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current)&& !isPathBlocked(j, i, current))
 			{
 				show[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
