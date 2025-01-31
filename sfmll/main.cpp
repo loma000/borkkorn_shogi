@@ -20,16 +20,18 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	
 	vector<pair<int, int>> endlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
+
+
+
 												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
 											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6} };
 
 	string rook = "C:/Users/Loma/Desktop/shogi/pawn.png";
 
-	vector<pair<string, string>>mark = { {"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" }
-	,{ "rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"rook","black" },{"pawn","black" },
-		{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"}
-	,{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"},{"rook","white"}  };
-	
+	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
+	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
+		{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"bishop","white"}
+	,{"rook","white"},{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"} };
 	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8 
 						   };
 	Sprite atk[81];
@@ -134,39 +136,60 @@ bool walkcheck(int x, int y, int id) {
 	// Direction modifier (1 for black, -1 for white)
 	int dir = (color == "black") ? 1 : -1;
 
+	// Pawn
 	if (piece == "pawn" && ispromoted[id] == 0) {
-		return (x == sx + dir && y == sy);
+		return (x == sx && y == sy + dir);
 	}
+
+	// Lance
 	if (piece == "lance" && ispromoted[id] == 0) {
-		return (x > sx && y == sy && color == "black") || (x < sx && y == sy && color == "white");
+		return (x == sx && ((color == "black" && y > sy) || (color == "white" && y < sy)));
 	}
+
+	// Knight
 	if (piece == "knight" && ispromoted[id] == 0) {
-		return (x == sx + 2 * dir && (y == sy + 1 || y == sy - 1));
+		return (abs(x - sx) == 1 && y == sy + 2 * dir);
 	}
+
+	// Silver General
 	if (piece == "silver" && ispromoted[id] == 0) {
-		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) || (x == sx - 1 && (y == sy - 1 || y == sy + 1));
+		return (abs(x - sx) <= 1 && abs(y - sy) <= 1 && !(x == sx && y == sy - dir));
 	}
-	if (piece == "gold" && ispromoted[id] == 0 || piece == "tokin" && ispromoted[id] == 0 || piece == "silver" && ispromoted[id] == 1 || piece == "knight" && ispromoted[id] == 1 || piece == "lance" && ispromoted[id] == 1) {
-		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) || (x == sx && (y == sy - 1 || y == sy + 1)) || (x == sx - dir && y == sy);
+
+	// Gold General, Tokin, Promoted Silver, Promoted Knight, Promoted Lance
+	if (piece == "gold" || piece == "tokin" || (piece == "silver" && ispromoted[id] == 1) ||
+		(piece == "knight" && ispromoted[id] == 1) || (piece == "lance" && ispromoted[id] == 1)) {
+		return (abs(x - sx) <= 1 && abs(y - sy) <= 1 && !(x == sx - dir && y == sy + dir) && !(x == sx + dir && y == sy + dir));
 	}
+
+	// Bishop
 	if (piece == "bishop" && ispromoted[id] == 0) {
 		return abs(x - sx) == abs(y - sy);
 	}
+
+	// Rook
 	if (piece == "rook" && ispromoted[id] == 0) {
 		return (x == sx || y == sy);
 	}
-	if (piece == "king" && ispromoted[id] == 0) {
+
+	// King
+	if (piece == "king") {
 		return abs(x - sx) <= 1 && abs(y - sy) <= 1;
 	}
-	if (piece == "bishop"&&ispromoted[id]==1) {
-		return abs(x - sx) == abs(y - sy) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
+
+	// Promoted Bishop (Dragon Horse)
+	if (piece == "bishop" && ispromoted[id] == 1) {
+		return (abs(x - sx) == abs(y - sy)) || (abs(x - sx) <= 1 && abs(y - sy) <= 1);
 	}
+
+	// Promoted Rook (Dragon King)
 	if (piece == "rook" && ispromoted[id] == 1) {
 		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
 	}
-	return false;  // Invalid move
 
+	return false;  // Invalid move
 }
+
 bool  occupiedcheck(int x, int y, int id) {
 	bool   occupied;
 	 
