@@ -167,7 +167,7 @@ string enermycheck(int x, int y,   int id) {
 	for (int i = 0; i < 40; i++)
 	{
 		 
-		if (mark[i].second != mark[id].second&& x == startlocation[i].first && y == startlocation[i].second) {
+		if (mark[i].second != mark[id].second&& x == startlocation[i].first && y == startlocation[i].second&& dead[i]==0) {
 			enermy = "enemy";
 			break;
 		}
@@ -211,8 +211,8 @@ int main()
 	RenderWindow window( VideoMode(431, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
 	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
@@ -419,7 +419,7 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null") {
+			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null" ) {
 				show[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
@@ -427,7 +427,7 @@ for (int i = 0; i < 9; i++)
 			{
 				 
 			}
-			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current))
+			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current) && dead[i * 9 + j]==0)
 			{
 				show[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
