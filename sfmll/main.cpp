@@ -41,7 +41,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	int dead[40];
 	int ispromoted[40];
 
-
+	int turn=1;
 
 
 
@@ -132,41 +132,63 @@ bool walkcheck(int x, int y, int id) {
 	string color = mark[id].second;
 	int sx = startlocation[id].first, sy = startlocation[id].second;
 
-	// Direction modifier (1 for black, -1 for white)
+	// Direction modifier: Black moves down (+1), White moves up (-1)
 	int dir = (color == "black") ? 1 : -1;
 
-	// Pawn
+	// Pawn (unpromoted)
 	if (piece == "pawn" && ispromoted[id] == 0) {
 		return (x == sx && y == sy + dir);
 	}
 
-	// Lance
+	// Promoted Pawn (Tokin) moves like a Gold General
+	if (piece == "pawn" && ispromoted[id] == 1) {
+		return (x == sx && (y == sy + dir || y == sy - 1)) ||  // Forward and backward
+			(x == sx + 1 && y == sy) ||  // Right
+			(x == sx - 1 && y == sy) ||  // Left
+			(x == sx + 1 && y == sy + dir) ||  // Forward-right
+			(x == sx - 1 && y == sy + dir);  // Forward-left
+	}
+
+	// Gold General (same as Tokin)
+	if (piece == "gold") {
+		return (x == sx && (y == sy + dir || y == sy - 1)) ||
+			(x == sx + 1 && y == sy) ||
+			(x == sx - 1 && y == sy) ||
+			(x == sx + 1 && y == sy + dir) ||
+			(x == sx - 1 && y == sy + dir);
+	}
+
+	// Lance (unpromoted)
 	if (piece == "lance" && ispromoted[id] == 0) {
 		return (x == sx && ((color == "black" && y > sy) || (color == "white" && y < sy)));
 	}
 
-	// Knight
+	// Knight (unpromoted)
 	if (piece == "knight" && ispromoted[id] == 0) {
-		return (abs(x - sx) == 1 && y == sy + 2 * dir);
+		return (x == sx + 1 && y == sy + 2 * dir) || (x == sx - 1 && y == sy + 2 * dir);
 	}
 
-	// Silver General
+	// Silver General (unpromoted)
 	if (piece == "silver" && ispromoted[id] == 0) {
-		return (abs(x - sx) <= 1 && abs(y - sy) <= 1 && !(x == sx && y == sy - dir));
+		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) ||
+			(x == sx - 1 && (y == sy - 1 || y == sy + 1));
 	}
 
-	// Gold General, Tokin, Promoted Silver, Promoted Knight, Promoted Lance
-	if (piece == "gold" || piece == "tokin" || (piece == "silver" && ispromoted[id] == 1) ||
-		(piece == "knight" && ispromoted[id] == 1) || (piece == "lance" && ispromoted[id] == 1)) {
-		return (abs(x - sx) <= 1 && abs(y - sy) <= 1 && !(x == sx - dir && y == sy + dir) && !(x == sx + dir && y == sy + dir));
+	// Promoted Silver, Promoted Knight, Promoted Lance (Gold General Movement)
+	if ((piece == "silver" && ispromoted[id] == 1) ||
+		(piece == "knight" && ispromoted[id] == 1) ||
+		(piece == "lance" && ispromoted[id] == 1)) {
+		return (x == sx && (y == sy + 1 || y == sy - 1)) ||
+			(x == sx + 1 && (y == sy + 1 || y == sy || y == sy - 1)) ||
+			(x == sx - 1 && (y == sy || y == sy + 1));
 	}
 
-	// Bishop
+	// Bishop (unpromoted)
 	if (piece == "bishop" && ispromoted[id] == 0) {
 		return abs(x - sx) == abs(y - sy);
 	}
 
-	// Rook
+	// Rook (unpromoted)
 	if (piece == "rook" && ispromoted[id] == 0) {
 		return (x == sx || y == sy);
 	}
@@ -176,18 +198,19 @@ bool walkcheck(int x, int y, int id) {
 		return abs(x - sx) <= 1 && abs(y - sy) <= 1;
 	}
 
-	// Promoted Bishop (Dragon Horse)
+	// Promoted Bishop (Bishop + King-like move)
 	if (piece == "bishop" && ispromoted[id] == 1) {
-		return (abs(x - sx) == abs(y - sy)) || (abs(x - sx) <= 1 && abs(y - sy) <= 1);
+		return (abs(x - sx) == abs(y - sy)) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
 	}
 
-	// Promoted Rook (Dragon King)
+	// Promoted Rook (Rook + King-like move)
 	if (piece == "rook" && ispromoted[id] == 1) {
 		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
 	}
 
 	return false;  // Invalid move
 }
+
 
 bool  occupiedcheck(int x, int y, int id) {
 	bool   occupied;
@@ -321,7 +344,7 @@ int main()
 							cout << current << " " << ispromoted[current] << endl;
 							show[j] = 0;
 							cout << "isclick";
-							 
+							turn++;
 							spriteMoved = true;
 							
 							
@@ -346,6 +369,7 @@ int main()
 							cout << current<<" "<<ispromoted[current] << endl;
 							show[k] = 0;
 							cout << "isclick";
+							turn++;
 							spriteMoved = true;
 							 break;
 
@@ -364,7 +388,7 @@ int main()
 			{
 
 					 
-					if (f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0) {
+					if (f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0&&(turn%2==0&&mark[i].second=="black"|| turn % 2 == 1 && mark[i].second == "white")) {
 						current = i;
 						showmove = true;
 						spriteMoved = false;
