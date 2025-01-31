@@ -132,85 +132,47 @@ bool walkcheck(int x, int y, int id) {
 	string color = mark[id].second;
 	int sx = startlocation[id].first, sy = startlocation[id].second;
 
-	// Direction modifier: Black moves down (+1), White moves up (-1)
+	// Direction modifier (1 for black, -1 for white)
 	int dir = (color == "black") ? 1 : -1;
 
-	// Pawn (unpromoted)
 	if (piece == "pawn" && ispromoted[id] == 0) {
 		return (x == sx && y == sy + dir);
 	}
 
-	// Promoted Pawn (Tokin) moves like a Gold General
-	if (piece == "pawn" && ispromoted[id] == 1) {
-		return (x == sx && (y == sy + dir || y == sy - 1)) ||  // Forward and backward
-			(x == sx + 1 && y == sy) ||  // Right
-			(x == sx - 1 && y == sy) ||  // Left
-			(x == sx + 1 && y == sy + dir) ||  // Forward-right
-			(x == sx - 1 && y == sy + dir);  // Forward-left
-	}
-
-	// Gold General (same as Tokin)
-	if (piece == "gold") {
-		return (x == sx && (y == sy + dir || y == sy - 1)) ||
-			(x == sx + 1 && y == sy) ||
-			(x == sx - 1 && y == sy) ||
-			(x == sx + 1 && y == sy + dir) ||
-			(x == sx - 1 && y == sy + dir);
-	}
-
-	// Lance (unpromoted)
 	if (piece == "lance" && ispromoted[id] == 0) {
-		return (x == sx && ((color == "black" && y > sy) || (color == "white" && y < sy)));
+		return (x == sx && y > sy && color == "black") || (x == sx && y < sy && color == "white");
 	}
 
-	// Knight (unpromoted)
 	if (piece == "knight" && ispromoted[id] == 0) {
 		return (x == sx + 1 && y == sy + 2 * dir) || (x == sx - 1 && y == sy + 2 * dir);
 	}
 
-	// Silver General (unpromoted)
 	if (piece == "silver" && ispromoted[id] == 0) {
-		return (x == sx + dir && (y == sy - 1 || y == sy || y == sy + 1)) ||
-			(x == sx - 1 && (y == sy - 1 || y == sy + 1));
+		return (y == sy + dir && (x == sx - 1 || x == sx || x == sx + 1)) || (y == sy - dir && (x == sx - 1 || x == sx + 1));
 	}
 
-	// Promoted Silver, Promoted Knight, Promoted Lance (Gold General Movement)
-	if ((piece == "silver" && ispromoted[id] == 1) ||
-		(piece == "knight" && ispromoted[id] == 1) ||
-		(piece == "lance" && ispromoted[id] == 1)) {
-		return (x == sx && (y == sy + 1 || y == sy - 1)) ||
-			(x == sx + 1 && (y == sy + 1 || y == sy || y == sy - 1)) ||
-			(x == sx - 1 && (y == sy || y == sy + 1));
+	if (piece == "gold" && ispromoted[id] == 0 || piece == "pawn" && ispromoted[id] == 1 || piece == "silver" && ispromoted[id] == 1 || piece == "knight" && ispromoted[id] == 1 || piece == "lance" && ispromoted[id] == 1) {
+		return (y == sy + dir && (x == sx - 1 || x == sx || x == sx + 1)) || (y == sy && (x == sx - 1 || x == sx + 1)) || (y == sy - dir && x == sx);
 	}
 
-	// Bishop (unpromoted)
 	if (piece == "bishop" && ispromoted[id] == 0) {
 		return abs(x - sx) == abs(y - sy);
 	}
-
-	// Rook (unpromoted)
 	if (piece == "rook" && ispromoted[id] == 0) {
 		return (x == sx || y == sy);
 	}
-
-	// King
-	if (piece == "king") {
+	if (piece == "king" && ispromoted[id] == 0) {
 		return abs(x - sx) <= 1 && abs(y - sy) <= 1;
 	}
-
-	// Promoted Bishop (Bishop + King-like move)
 	if (piece == "bishop" && ispromoted[id] == 1) {
-		return (abs(x - sx) == abs(y - sy)) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
+		return abs(x - sx) == abs(y - sy) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
 	}
-
-	// Promoted Rook (Rook + King-like move)
 	if (piece == "rook" && ispromoted[id] == 1) {
 		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
 	}
-
 	return false;  // Invalid move
-}
 
+}
 
 bool  occupiedcheck(int x, int y, int id) {
 	bool   occupied;
