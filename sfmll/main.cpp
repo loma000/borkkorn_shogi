@@ -211,8 +211,8 @@ int main()
 	RenderWindow window( VideoMode(431, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
 	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
