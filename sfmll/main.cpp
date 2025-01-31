@@ -70,7 +70,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		string color = mark[id].second;
 		int sx = startlocation[id].first, sy = startlocation[id].second;
 
-		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance (unpromoted)
+		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance  
 		if (piece == "rook" || piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1) ||
 			(piece == "rook" && ispromoted[id] == 1)) {
 
