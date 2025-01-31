@@ -67,11 +67,12 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 	bool isPathBlocked(int x, int y, int id) {
 		string piece = mark[id].first;
+		string color = mark[id].second;
 		int sx = startlocation[id].first, sy = startlocation[id].second;
 
-		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance
-		if (piece == "rook" || piece == "bishop" || (piece == "lance" && ispromoted[id] == 0) ||
-			(piece == "bishop" && ispromoted[id] == 1) || (piece == "rook" && ispromoted[id] == 1)) {
+		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance (unpromoted)
+		if (piece == "rook" || piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1) ||
+			(piece == "rook" && ispromoted[id] == 1)) {
 
 			int dx = (x > sx) ? 1 : (x < sx) ? -1 : 0;
 			int dy = (y > sy) ? 1 : (y < sy) ? -1 : 0;
@@ -88,6 +89,22 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 				cy += dy;
 			}
 		}
+
+		// Special case for the unpromoted lance (moves only straight forward)
+		if (piece == "lance" && ispromoted[id] == 0) {
+			int dir = (color == "black") ? 1 : -1; // Direction (black moves down, white moves up)
+
+			int cy = sy + dir; // Move in the correct direction
+			while (cy != y) {
+				for (int i = 0; i < 40; i++) {
+					if (startlocation[i].first == sx && startlocation[i].second == cy && dead[i] == 0) {
+						return true; // Path is blocked
+					}
+				}
+				cy += dir; // Continue moving forward
+			}
+		}
+
 		return false; // Path is clear
 	}
 
