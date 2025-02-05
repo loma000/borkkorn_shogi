@@ -71,14 +71,34 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		int sx = startlocation[id].first, sy = startlocation[id].second;
 
 		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance  
-		if (piece == "rook" || piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1) ||
-			(piece == "rook" && ispromoted[id] == 1)) {
+		if (piece == "rook" || piece == "bishop" || ispromoted[id] == 1) {
+			// Promoted Bishop (Dragon Horse) moves like a bishop but also one square in any direction
+			if (piece == "bishop" && ispromoted[id] == 1) {
+				if (abs(x - sx) <= 1 && abs(y - sy) <= 1) {
+					return false; // Can move like a king, no need to check path
+				}
+			}
+			// Promoted Rook (Dragon King) moves like a rook but also one square diagonally
+			if (piece == "rook" && ispromoted[id] == 1) {
+				if (abs(x - sx) == 1 && abs(y - sy) == 1) {
+					return false; // Can move one square diagonally, no need to check path
+				}
+			}
 
+			// Compute direction of movement
 			int dx = (x > sx) ? 1 : (x < sx) ? -1 : 0;
 			int dy = (y > sy) ? 1 : (y < sy) ? -1 : 0;
 
-			int cx = sx + dx, cy = sy + dy;
+			// Ensure Bishop moves diagonally and Rook moves straight
+			if ((piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1)) && abs(x - sx) != abs(y - sy)) {
+				return true; // Invalid diagonal move
+			}
+			if ((piece == "rook" || (piece == "rook" && ispromoted[id] == 1)) && dx != 0 && dy != 0) {
+				return true; // Invalid straight move
+			}
 
+			// Check if path is blocked
+			int cx = sx + dx, cy = sy + dy;
 			while (cx != x || cy != y) {
 				for (int i = 0; i < 40; i++) {
 					if (startlocation[i].first == cx && startlocation[i].second == cy && dead[i] == 0) {
@@ -93,7 +113,6 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		// Special case for the unpromoted lance (moves only straight forward)
 		if (piece == "lance" && ispromoted[id] == 0) {
 			int dir = (color == "black") ? 1 : -1; // Direction (black moves down, white moves up)
-
 			int cy = sy + dir; // Move in the correct direction
 			while (cy != y) {
 				for (int i = 0; i < 40; i++) {
@@ -107,6 +126,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 		return false; // Path is clear
 	}
+
 
 
 
@@ -225,7 +245,7 @@ string enermycheck(int x, int y,   int id) {
 			enermy = "enemy";
 			break;
 		}
-		else if(mark[i].second  == mark[id].second && x == startlocation[i].first && y == startlocation[i].second)
+		else if(mark[i].second  == mark[id].second && x == startlocation[i].first && y == startlocation[i].second && dead[i] == 0)
 		{
 			enermy = "ally";
 			break;
@@ -265,8 +285,8 @@ int main()
 	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
 	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
@@ -371,7 +391,7 @@ int main()
 						current = i;
 						showmove = true;
 						spriteMoved = false;
-						 
+						cout << "hehe" << endl;
 
 						
 						break;
@@ -474,7 +494,7 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null"&& !isPathBlocked(j,i,current)) {
+			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null"  && !isPathBlocked(j,i,current)  ) {
 				show[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
@@ -482,7 +502,7 @@ for (int i = 0; i < 9; i++)
 			{
 				 
 			}
-			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current)&& !isPathBlocked(j, i, current))
+			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current)  && !isPathBlocked(j, i, current)  )
 			{
 				show[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
