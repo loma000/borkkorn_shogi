@@ -18,7 +18,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 										,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6}  };
 	 
 	
-	vector<pair<int, int>> endlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
+	vector<pair<int, int>> resetlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
 
 
@@ -40,30 +40,26 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	int  show[81];
 	int dead[40];
 	int ispromoted[40];
-
 	int turn=1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	Sprite f[40];
 	Sprite mvt[81];
+	int size = 48;
+
+	void resetgame() {
+		int size = 48;
+		for (int i = 0; i < 40; i++)
+		{
+			 
+			f[i].setPosition(size * resetlocation[i].first, size * resetlocation[i].second);
+			startlocation[i].first = resetlocation[i].first;
+			startlocation[i].second = resetlocation[i].second;
+			dead[i] = 0;
+			turn = 1;
+		}
+
+
+
+	}
 
 	bool isPathBlocked(int x, int y, int id) {
 		string piece = mark[id].first;
@@ -285,8 +281,8 @@ int main()
 	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
 	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
@@ -312,7 +308,9 @@ int main()
 		{
 			if (event.type == Event::Closed)
 				window.close();
-
+			if (  Keyboard::isKeyPressed( Keyboard::R)) {
+				resetgame();
+			}
 
 				 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
@@ -327,11 +325,15 @@ int main()
 						 
 						if ( atk[j].getGlobalBounds().contains(mousePos)&&show[j] == 1) {
 							Vector2f position = atk[j].getPosition();
-							int x = int(position.x) / size;
-							int y = int(position.y) / size;
+							int x = int(position.x / size);
+							int y = int(position.y / size);
 							for (int i = 0; i < 40; i++)
 							{
-								if (x == startlocation[i].first && y == startlocation[i].second) { dead[i] = 1; break; }
+								if (x == startlocation[i].first && y == startlocation[i].second&&dead[i]==0) { dead[i] = 1;cout << mark[i].first << " " << i << " dead" << endl;
+								
+								 
+								break;
+								  }
 							}
 
 							startlocation[current].first = x;
@@ -391,7 +393,7 @@ int main()
 						current = i;
 						showmove = true;
 						spriteMoved = false;
-						cout << "hehe" << endl;
+						cout << dead[i] << endl;
 
 						
 						break;
