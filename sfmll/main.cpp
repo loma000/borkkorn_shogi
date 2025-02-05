@@ -262,7 +262,7 @@ int main()
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
-	RenderWindow window( VideoMode(431, 431), "maibork");
+	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
 	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
