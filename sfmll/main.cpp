@@ -467,17 +467,7 @@ int main()
 		}
 
 //cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
-if (ispromoted[current] == 1)
-{
-	 
-			f[current].setColor(sf::Color::Red);
 
-}
-else
-{
-	f[current].setColor(sf::Color::White);
-
-}
 		
 
 
@@ -492,6 +482,23 @@ for (int i = 0; i < 40; i++)
 	
 	if(dead[i]==0)
 		window.draw(f[i]);
+
+
+
+	if (ispromoted[i] == 1)
+	{
+
+		f[i].setColor(sf::Color::Red);
+
+	}
+	else
+	{
+		f[i].setColor(sf::Color::White);
+
+	}
+
+
+
 
 	}
 	if (showmove)
