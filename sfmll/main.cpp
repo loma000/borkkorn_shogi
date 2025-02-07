@@ -54,6 +54,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 			startlocation[i].first = resetlocation[i].first;
 			startlocation[i].second = resetlocation[i].second;
 			dead[i] = 0;
+			ispromoted[i] = 0;
 			turn = 1;
 		}
 
@@ -281,8 +282,8 @@ int main()
 	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
 	bool spriteMoved = false;
 	item.loadFromFile( rook );
 	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
@@ -471,7 +472,12 @@ if (ispromoted[current] == 1)
 	 
 			f[current].setColor(sf::Color::Red);
 
-		}
+}
+else
+{
+	f[current].setColor(sf::Color::White);
+
+}
 		
 
 
