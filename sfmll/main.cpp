@@ -38,7 +38,8 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 	int amdead[40];
-	int  show[81];
+	int  showatk[81];
+	int  showmvt[81];
 	int dead[40];
 	int ispromoted[40];
 	int turn=1;
@@ -229,7 +230,7 @@ bool walkcheck(int x, int y, int id) {
 	if (piece == "rook" && ispromoted[id] == 1) {
 		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
 	}
-	return false;  // Invalid move
+	return false;   
 
 }
 
@@ -349,7 +350,7 @@ int main()
 					for (int j = 0; j < 81; j++)
 					{
 						 
-						if ( atk[j].getGlobalBounds().contains(mousePos)&&show[j] == 1) {
+						if ( atk[j].getGlobalBounds().contains(mousePos)&&showatk[j] == 1) {
 							Vector2f position = atk[j].getPosition();
 							int x = int(position.x / size);
 							int y = int(position.y / size);
@@ -369,8 +370,8 @@ int main()
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							promoted(current);
 							cout << current << " " << ispromoted[current] << endl;
-							show[j] = 0;
-							cout << "isclick";
+							showatk[j] = 0;
+							cout << "isclickatk";
 							turn++;
 							spriteMoved = true;
 							
@@ -387,7 +388,7 @@ int main()
 					for (int k = 0; k < 81; k++)
 					{
 						 
-						if (mvt[k].getGlobalBounds().contains(mousePos) &&show[k]==1) {
+						if (mvt[k].getGlobalBounds().contains(mousePos) &&showmvt[k]==1) {
 							Vector2f position = mvt[k].getPosition();
 							startlocation[current].first = (position.x) / size;
 							startlocation[current].second = (position.y) / size;
@@ -395,8 +396,8 @@ int main()
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							promoted(current);
 							cout << current<<" "<<ispromoted[current] << endl;
-							show[k] = 0;
-							cout << "isclick";
+							showmvt[k] = 0;
+							cout << "isclickmvt";
 							turn++;
 							spriteMoved = true;
 							 break;
@@ -429,8 +430,8 @@ int main()
 						showmove = false;
 						for (int i = 0; i < 81; i++)
 						{
-							show[i] = 0;
-
+							showmvt[i] = 0;
+							showatk[i] = 0;
 						}
 						 
 						break;
@@ -527,7 +528,7 @@ for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
 		{
 			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null"  && !isPathBlocked(j,i,current)  ) {
-				show[i * 9 + j]=1;
+				showmvt[i * 9 + j]=1;
 				window.draw(mvt[i * 9 + j]);  
 			}
 			else if(enermycheck(j, i, current)=="ally" && walkcheck(j, i, current))
@@ -536,7 +537,7 @@ for (int i = 0; i < 9; i++)
 			}
 			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current)  && !isPathBlocked(j, i, current)  )
 			{
-				show[i * 9 + j] = 1;
+				showatk[i * 9 + j] = 1;
 				window.draw(atk[i * 9 + j]);
 			}
 
