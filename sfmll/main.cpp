@@ -17,7 +17,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 											  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
 										,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6}  };
 	 
-	
+ 
 	vector<pair<int, int>> resetlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
 
@@ -25,8 +25,9 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
 											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6} };
+	string boards = "C:/Users/Loma/Desktop/shogi/board.png";
 
-	string rook = "C:/Users/Loma/Desktop/shogi/pawn.png";
+	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
 	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
 	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
 		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}
@@ -36,7 +37,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	Sprite atk[81];
 
 
-
+	int amdead[40];
 	int  show[81];
 	int dead[40];
 	int ispromoted[40];
@@ -44,13 +45,37 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	Sprite f[40];
 	Sprite mvt[81];
 	int size = 48;
+	bool move=false ;
+
+
+	void smoothmove(int current) { 
+		float speed = 0.05;
+		Vector2f target(startlocation[current].first*::size, startlocation[current].second*::size);
+	
+	Vector2f shogilocate = f[current].getPosition();
+	Vector2f direction = target - shogilocate;
+	float length =  sqrt(direction.x * direction.x + direction.y * direction.y);
+	if (length > 0.1f) {   
+		direction /= length;
+		 
+		f[current].move(direction * speed);   
+	}
+	else
+	{
+		::move = false;
+		for (int i = 0; i < 40; i++)
+		{
+			dead[i] = amdead[i];
+		}
+	}
+	}
 
 	void resetgame() {
-		int size = 48;
+		 
 		for (int i = 0; i < 40; i++)
 		{
 			 
-			f[i].setPosition(size * resetlocation[i].first, size * resetlocation[i].second);
+			f[i].setPosition(::size * resetlocation[i].first, ::size * resetlocation[i].second);
 			startlocation[i].first = resetlocation[i].first;
 			startlocation[i].second = resetlocation[i].second;
 			dead[i] = 0;
@@ -129,15 +154,15 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 void loadsprite() {
-	 int size = 48;
+	  
 
 	for (int i = 0; i < 40; i++)
 	{
 		int n =  pawnid[i];
 		int x = abs(n) - 1;
 		int y =  n>0?1:0;
-		f[i].setTextureRect(IntRect(size * x, size * y, size, size));
-		f[i].setPosition(size*startlocation[i].first, size * startlocation[i].second );
+		f[i].setTextureRect(IntRect(::size * x, ::size * y, ::size, ::size));
+		f[i].setPosition(::size*startlocation[i].first, ::size * startlocation[i].second );
 	}
 
 
@@ -145,14 +170,14 @@ void loadsprite() {
  }
 
 void loadtile() {
-	int size = 48;
+	 
 	int k = 0;
 	for (int i = 0; i < 9; i++)
 	{ 
 		for (int j = 0; j < 9; j++)
 		{
-			atk[k].setPosition(size * j, size * i);
-          mvt[k].setPosition(size * j, size * i);
+			atk[k].setPosition(::size * j, ::size * i);
+          mvt[k].setPosition(::size * j, ::size * i);
 		  k++;
 		}
 		
@@ -282,11 +307,11 @@ int main()
 	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attack.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/move.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
 	bool spriteMoved = false;
-	item.loadFromFile( rook );
-	board.loadFromFile("C:/Users/Loma/Desktop/shogi/board.png");
+	item.loadFromFile(piece);
+	board.loadFromFile(boards);
 	Sprite b(board);
 	for (int i = 0; i < 40; i++)
 	{
@@ -330,7 +355,7 @@ int main()
 							int y = int(position.y / size);
 							for (int i = 0; i < 40; i++)
 							{
-								if (x == startlocation[i].first && y == startlocation[i].second&&dead[i]==0) { dead[i] = 1;cout << mark[i].first << " " << i << " dead" << endl;
+								if (x == startlocation[i].first && y == startlocation[i].second&&dead[i]==0) { amdead[i] = 1;cout << mark[i].first << " " << i << " dead" << endl;
 								
 								 
 								break;
@@ -340,8 +365,8 @@ int main()
 							startlocation[current].first = x;
 							startlocation[current].second = y;
 
-
-							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							::move = true;
+							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							promoted(current);
 							cout << current << " " << ispromoted[current] << endl;
 							show[j] = 0;
@@ -366,7 +391,8 @@ int main()
 							Vector2f position = mvt[k].getPosition();
 							startlocation[current].first = (position.x) / size;
 							startlocation[current].second = (position.y) / size;
-							f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							::move = true;
+							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							promoted(current);
 							cout << current<<" "<<ispromoted[current] << endl;
 							show[k] = 0;
@@ -390,7 +416,7 @@ int main()
 			{
 
 					 
-					if (f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0&&(turn%2==0&&mark[i].second=="black"|| turn % 2 == 1 && mark[i].second == "white")) {
+					if (!::move &&f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0&&(turn%2==0&&mark[i].second=="black"|| turn % 2 == 1 && mark[i].second == "white")) {
 						current = i;
 						showmove = true;
 						spriteMoved = false;
@@ -414,28 +440,7 @@ int main()
 					} 
 
 
-				 
 				
-				
-
-
-	
-
- 
-					 
-
-
-
-
-			
-			 
-
-
-
-
-
-				 
-
 
 				
 			}
@@ -468,7 +473,10 @@ int main()
 
 //cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
 
-		
+		if (::move)
+		{
+			smoothmove(current);
+		}
 
 
 
@@ -485,17 +493,26 @@ for (int i = 0; i < 40; i++)
 
 
 
-	if (ispromoted[i] == 1)
+	if ((turn % 2 == 0 && mark[i].second == "black" || turn % 2 == 1 && mark[i].second == "white") && ispromoted[i] == 1)
+	{f[i].setColor(sf::Color::Magenta);
+
+		
+
+	}
+	else if(ispromoted[i] == 1)
+	{f[i].setColor(sf::Color::Red);
+		
+
+	}
+	else if ((turn % 2 == 0 && mark[i].second == "black" || turn % 2 == 1 && mark[i].second == "white"))
 	{
-
-		f[i].setColor(sf::Color::Red);
-
+		f[i].setColor(sf::Color::Yellow);
 	}
 	else
 	{
-		f[i].setColor(sf::Color::White);
-
+f[i].setColor(sf::Color::White);
 	}
+	 
 
 
 
