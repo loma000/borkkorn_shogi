@@ -50,7 +50,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 	void smoothmove(int current) { 
-		float speed = 0.075;
+		float speed = 0.07;
 		Vector2f target(startlocation[current].first*::size, startlocation[current].second*::size);
 	
 	Vector2f shogilocate = f[current].getPosition();
