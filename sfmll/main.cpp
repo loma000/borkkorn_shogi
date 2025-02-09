@@ -25,7 +25,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
 											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6} };
-	string boards = "C:/Users/Loma/Desktop/shogi/board.png";
+	string boards = "C:/Users/Loma/Desktop/shogi/Bboard.png";
 
 	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
 	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
@@ -50,7 +50,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 	void smoothmove(int current) { 
-		float speed = 0.05;
+		float speed = 0.075;
 		Vector2f target(startlocation[current].first*::size, startlocation[current].second*::size);
 	
 	Vector2f shogilocate = f[current].getPosition();
@@ -82,6 +82,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 			dead[i] = 0;
 			ispromoted[i] = 0;
 			turn = 1;
+			amdead[i] = 0;
 		}
 
 
