@@ -25,7 +25,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
 											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6} };
-	string boards = "C:/Users/Loma/Desktop/shogi/Bboard.png";
+	string boards = "C:/Users/Loma/Desktop/shogi/BambooBoard.png";
 
 	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
 	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
@@ -309,8 +309,8 @@ int main()
 	RenderWindow window( VideoMode(800, 431), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/attacktile.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/moveabletile.png");
+	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/SwordS.png");
+	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/movedot.png");
 	bool spriteMoved = false;
 	item.loadFromFile(piece);
 	board.loadFromFile(boards);
