@@ -47,11 +47,11 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	Sprite mvt[81];
 	int size = 48;
 	bool move=false ;
-	int border = 20;
-
+	int borderx = 40;
+	int bordery = 40;
 	void smoothmove(int current) { 
 		float speed = 0.8;
-		Vector2f target(startlocation[current].first*::size + ::border, startlocation[current].second*::size + ::border);
+		Vector2f target(startlocation[current].first*::size + ::borderx, startlocation[current].second*::size + ::bordery);
 	
 	Vector2f shogilocate = f[current].getPosition();
 	Vector2f direction = target - shogilocate;
@@ -67,7 +67,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		for (int i = 0; i < 40; i++)
 		{
 			dead[i] = amdead[i];
-			f[i].setPosition(::size * startlocation[i].first + ::border, ::size * startlocation[i].second + ::border);
+			f[i].setPosition(::size * startlocation[i].first + ::borderx, ::size * startlocation[i].second + ::bordery);
 		}
 	}
 	}
@@ -77,7 +77,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		for (int i = 0; i < 40; i++)
 		{
 			 
-			f[i].setPosition(::size * resetlocation[i].first + ::border, ::size * resetlocation[i].second + ::border);
+			f[i].setPosition(::size * resetlocation[i].first + ::borderx, ::size * resetlocation[i].second + ::bordery);
 			startlocation[i].first = resetlocation[i].first;
 			startlocation[i].second = resetlocation[i].second;
 			dead[i] = 0;
@@ -165,7 +165,7 @@ void loadsprite() {
 		int x = abs(n) - 1;
 		int y =  n>0?1:0;
 		f[i].setTextureRect(IntRect(::size * x, ::size * y, ::size, ::size));
-		f[i].setPosition(::size*startlocation[i].first + ::border, ::size * startlocation[i].second + ::border);
+		f[i].setPosition(::size*startlocation[i].first + ::borderx, ::size * startlocation[i].second + ::bordery);
 	}
 
 
@@ -179,8 +179,8 @@ void loadtile() {
 	{ 
 		for (int j = 0; j < 9; j++)
 		{
-			atk[k].setPosition(::size * j + ::border, ::size * i + ::border);
-          mvt[k].setPosition(::size * j + ::border, ::size * i + ::border);
+			atk[k].setPosition(::size * j + ::borderx, ::size * i + ::bordery);
+          mvt[k].setPosition(::size * j + ::borderx, ::size * i + ::bordery);
 		  k++;
 		}
 		
@@ -316,7 +316,7 @@ int main()
 	item.loadFromFile(piece);
 	board.loadFromFile(boards);
 	Sprite b(board);
-	b.setPosition(::border, ::border);
+	b.setPosition(::borderx, ::bordery);
 	for (int i = 0; i < 40; i++)
 	{
 		f[i].setTexture(item);
@@ -355,8 +355,8 @@ int main()
 						 
 						if ( atk[j].getGlobalBounds().contains(mousePos)&&showatk[j] == 1) {
 							Vector2f position = atk[j].getPosition();
-							int x = int(position.x / size);
-							int y = int(position.y / size);
+							int x = int((position.x - ::borderx) / size);
+							int y = int((position.y - ::bordery) / size);
 							for (int i = 0; i < 40; i++)
 							{
 								if (x == startlocation[i].first && y == startlocation[i].second&&dead[i]==0) { amdead[i] = 1;cout << mark[i].first << " " << i << " dead" << endl;
@@ -393,8 +393,8 @@ int main()
 						 
 						if (mvt[k].getGlobalBounds().contains(mousePos) &&showmvt[k]==1) {
 							Vector2f position = mvt[k].getPosition();
-							startlocation[current].first = (position.x) / size;
-							startlocation[current].second = (position.y) / size;
+							startlocation[current].first = (position.x-::borderx) / size;
+							startlocation[current].second = (position.y-::bordery) / size;
 							::move = true;
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							promoted(current);
