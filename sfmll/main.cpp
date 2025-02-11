@@ -47,11 +47,11 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	Sprite mvt[81];
 	int size = 48;
 	bool move=false ;
-
+	int border = 20;
 
 	void smoothmove(int current) { 
 		float speed = 0.8;
-		Vector2f target(startlocation[current].first*::size, startlocation[current].second*::size);
+		Vector2f target(startlocation[current].first*::size + ::border, startlocation[current].second*::size + ::border);
 	
 	Vector2f shogilocate = f[current].getPosition();
 	Vector2f direction = target - shogilocate;
@@ -67,7 +67,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		for (int i = 0; i < 40; i++)
 		{
 			dead[i] = amdead[i];
-			f[i].setPosition(::size * startlocation[i].first, ::size * startlocation[i].second);
+			f[i].setPosition(::size * startlocation[i].first + ::border, ::size * startlocation[i].second + ::border);
 		}
 	}
 	}
@@ -77,7 +77,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		for (int i = 0; i < 40; i++)
 		{
 			 
-			f[i].setPosition(::size * resetlocation[i].first, ::size * resetlocation[i].second);
+			f[i].setPosition(::size * resetlocation[i].first + ::border, ::size * resetlocation[i].second + ::border);
 			startlocation[i].first = resetlocation[i].first;
 			startlocation[i].second = resetlocation[i].second;
 			dead[i] = 0;
@@ -165,7 +165,7 @@ void loadsprite() {
 		int x = abs(n) - 1;
 		int y =  n>0?1:0;
 		f[i].setTextureRect(IntRect(::size * x, ::size * y, ::size, ::size));
-		f[i].setPosition(::size*startlocation[i].first, ::size * startlocation[i].second );
+		f[i].setPosition(::size*startlocation[i].first + ::border, ::size * startlocation[i].second + ::border);
 	}
 
 
@@ -179,8 +179,8 @@ void loadtile() {
 	{ 
 		for (int j = 0; j < 9; j++)
 		{
-			atk[k].setPosition(::size * j, ::size * i);
-          mvt[k].setPosition(::size * j, ::size * i);
+			atk[k].setPosition(::size * j + ::border, ::size * i + ::border);
+          mvt[k].setPosition(::size * j + ::border, ::size * i + ::border);
 		  k++;
 		}
 		
@@ -307,7 +307,7 @@ int main()
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
-	RenderWindow window( VideoMode(800, 431), "maibork");
+	RenderWindow window( VideoMode(1000, 500), "maibork");
 	Texture item;
 	Texture board;
 	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/SwordS.png");
@@ -316,6 +316,7 @@ int main()
 	item.loadFromFile(piece);
 	board.loadFromFile(boards);
 	Sprite b(board);
+	b.setPosition(::border, ::border);
 	for (int i = 0; i < 40; i++)
 	{
 		f[i].setTexture(item);
