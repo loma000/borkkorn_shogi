@@ -180,7 +180,7 @@ bool shogiengine::isPathBlocked(int x, int y, int id) {
 
 
 
-void shogiengine::loadsprite() {
+  void shogiengine::loadsprite() {
 
 
 	for (int i = 0; i < 40; i++)
@@ -191,8 +191,6 @@ void shogiengine::loadsprite() {
 		f[i].setTextureRect(IntRect(size * x, size * y, size, size));
 		f[i].setPosition(size * startlocation[i].first + borderx, size * startlocation[i].second + bordery);
 	}
-
-
 
 }
 
@@ -261,7 +259,7 @@ bool shogiengine::walkcheck(int x, int y, int id) {
 }
 
 bool  shogiengine::occupiedcheck(int x, int y, int id) {
-	bool   occupied;
+	bool occupied;
 
 
 

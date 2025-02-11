@@ -1,8 +1,14 @@
 #include"shogiengine.h"
+
+
+
+
+
+
 int main()
 {
 	shogiengine shogi;
-	int size = 48; int count=0;
+	  int count=0;
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
@@ -54,8 +60,8 @@ int main()
 						 
 						if (shogi.atk[j].getGlobalBounds().contains(mousePos)&& shogi.showatk[j] == 1) {
 							Vector2f position = shogi.atk[j].getPosition();
-							int x = int((position.x - shogi.borderx) / size);
-							int y = int((position.y - shogi.bordery) / size);
+							int x = int((position.x - shogi.borderx) / shogi.size);
+							int y = int((position.y - shogi.bordery) / shogi.size);
 							for (int i = 0; i < 40; i++)
 							{
 								if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second&& shogi.dead[i]==0) {
@@ -93,8 +99,8 @@ int main()
 						 
 						if (shogi.mvt[k].getGlobalBounds().contains(mousePos) && shogi.showmvt[k]==1) {
 							Vector2f position = shogi.mvt[k].getPosition();
-							shogi.startlocation[current].first = (position.x- shogi.borderx) / size;
-							shogi.startlocation[current].second = (position.y- shogi.bordery) / size;
+							shogi.startlocation[current].first = (position.x- shogi.borderx) / shogi.size;
+							shogi.startlocation[current].second = (position.y- shogi.bordery) / shogi.size;
 							shogi.move = true;
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 							shogi.promoted(current);
