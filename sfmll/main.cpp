@@ -115,12 +115,7 @@ int main()
 					}
 }
 
-
-					 
 					
-					 
-					
-
 					 
 					 for (int i = 0; i < 40; i++)
 			{
@@ -150,38 +145,16 @@ int main()
 					} 
 
 
-				
 
 				
 			}
 		 
 
-		 /*if (e.type == sf::Event::KeyPressed) {
-					if (e.key.code == sf::Keyboard::Space) {
-						if (showmove)
-						{
-							showmove = false;
-						}
-						for (int i = 0; i < 40; i++)
-						{
-							f[i].setColor(sf::Color::White);
-
-						}
-					}
-				}
-			*/
-
-
-
-
-
-
-
-
+		
 
 		}
 
-//cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
+ 
 
 		if (shogi.move)
 		{
