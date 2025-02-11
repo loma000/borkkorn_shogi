@@ -289,7 +289,7 @@ string enermycheck(int x, int y,   int id) {
 void promoted(int id) {
 	 
 
-	if (mark[id].first=="king"&& mark[id].first == "gold" &&(startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white"))
+	if (mark[id].first!="king"&& mark[id].first != "gold" &&(startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white"))
 	{
 		ispromoted[id] = 1;
 	}
