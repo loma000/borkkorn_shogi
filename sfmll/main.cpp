@@ -1,308 +1,7 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <vector>
-
-using namespace std;
-using namespace sf;
-
-
-const int BOARD_SIZE = 9;
-const int CELL_SIZE = 80;  
-const int WINDOW_WIDTH = BOARD_SIZE * CELL_SIZE;
-const int WINDOW_HEIGHT = BOARD_SIZE * CELL_SIZE;
-
-bool showmove = false;
-vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
-										,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
-											  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
-										,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6}  };
-	 
- 
-	vector<pair<int, int>> resetlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
-											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
-
-
-
-												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
-											,{7,7},{1,7},{0,6},{1,6},{2,6},{3,6},{4,6},{5,6},{6,6},{7,6},{8,6} };
-	string boards = "C:/Users/Loma/Desktop/shogi/BambooBoard.png";
-
-	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
-	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
-	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
-		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}
-	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
-	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8 
-						   };
-	Sprite atk[81];
-
-
-	int amdead[40];
-	int  showatk[81];
-	int  showmvt[81];
-	int dead[40];
-	int ispromoted[40];
-	int turn=1;
-	Sprite f[40];
-	Sprite mvt[81];
-	int size = 48;
-	bool move=false ;
-	int borderx = 40;
-	int bordery = 40;
-	void smoothmove(int current) { 
-		float speed = 0.8;
-		Vector2f target(startlocation[current].first*::size + ::borderx, startlocation[current].second*::size + ::bordery);
-	
-	Vector2f shogilocate = f[current].getPosition();
-	Vector2f direction = target - shogilocate;
-	float length =  sqrt(direction.x * direction.x + direction.y * direction.y);
-	if (length > 0.5) {   
-		direction /= length;
-		 
-		f[current].move(direction * speed);   
-	}
-	else
-	{
-		::move = false;
-		for (int i = 0; i < 40; i++)
-		{
-			dead[i] = amdead[i];
-			f[i].setPosition(::size * startlocation[i].first + ::borderx, ::size * startlocation[i].second + ::bordery);
-		}
-	}
-	}
-
-	void resetgame() {
-		 
-		for (int i = 0; i < 40; i++)
-		{
-			 
-			f[i].setPosition(::size * resetlocation[i].first + ::borderx, ::size * resetlocation[i].second + ::bordery);
-			startlocation[i].first = resetlocation[i].first;
-			startlocation[i].second = resetlocation[i].second;
-			dead[i] = 0;
-			ispromoted[i] = 0;
-			turn = 1;
-			amdead[i] = 0;
-		}
-
-
-
-	}
-
-	bool isPathBlocked(int x, int y, int id) {
-		string piece = mark[id].first;
-		string color = mark[id].second;
-		int sx = startlocation[id].first, sy = startlocation[id].second;
-
-		// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance  
-		if (piece == "rook" || piece == "bishop" || ispromoted[id] == 1) {
-			// Promoted Bishop (Dragon Horse) moves like a bishop but also one square in any direction
-			if (piece == "bishop" && ispromoted[id] == 1) {
-				if (abs(x - sx) <= 1 && abs(y - sy) <= 1) {
-					return false; // Can move like a king, no need to check path
-				}
-			}
-			// Promoted Rook (Dragon King) moves like a rook but also one square diagonally
-			if (piece == "rook" && ispromoted[id] == 1) {
-				if (abs(x - sx) == 1 && abs(y - sy) == 1) {
-					return false; // Can move one square diagonally, no need to check path
-				}
-			}
-
-			// Compute direction of movement
-			int dx = (x > sx) ? 1 : (x < sx) ? -1 : 0;
-			int dy = (y > sy) ? 1 : (y < sy) ? -1 : 0;
-
-			// Ensure Bishop moves diagonally and Rook moves straight
-			if ((piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1)) && abs(x - sx) != abs(y - sy)) {
-				return true; // Invalid diagonal move
-			}
-			if ((piece == "rook" || (piece == "rook" && ispromoted[id] == 1)) && dx != 0 && dy != 0) {
-				return true; // Invalid straight move
-			}
-
-			// Check if path is blocked
-			int cx = sx + dx, cy = sy + dy;
-			while (cx != x || cy != y) {
-				for (int i = 0; i < 40; i++) {
-					if (startlocation[i].first == cx && startlocation[i].second == cy && dead[i] == 0) {
-						return true; // Path is blocked
-					}
-				}
-				cx += dx;
-				cy += dy;
-			}
-		}
-
-		// Special case for the unpromoted lance (moves only straight forward)
-		if (piece == "lance" && ispromoted[id] == 0) {
-			int dir = (color == "black") ? 1 : -1; // Direction (black moves down, white moves up)
-			int cy = sy + dir; // Move in the correct direction
-			while (cy != y) {
-				for (int i = 0; i < 40; i++) {
-					if (startlocation[i].first == sx && startlocation[i].second == cy && dead[i] == 0) {
-						return true; // Path is blocked
-					}
-				}
-				cy += dir; // Continue moving forward
-			}
-		}
-
-		return false; // Path is clear
-	}
-
-
-
-
-
-void loadsprite() {
-	  
-
-	for (int i = 0; i < 40; i++)
-	{
-		int n =  pawnid[i];
-		int x = abs(n) - 1;
-		int y =  n>0?1:0;
-		f[i].setTextureRect(IntRect(::size * x, ::size * y, ::size, ::size));
-		f[i].setPosition(::size*startlocation[i].first + ::borderx, ::size * startlocation[i].second + ::bordery);
-	}
-
-
-
- }
-
-void loadtile() {
-	 
-	int k = 0;
-	for (int i = 0; i < 9; i++)
-	{ 
-		for (int j = 0; j < 9; j++)
-		{
-			atk[k].setPosition(::size * j + ::borderx, ::size * i + ::bordery);
-          mvt[k].setPosition(::size * j + ::borderx, ::size * i + ::bordery);
-		  k++;
-		}
-		
-	}
-
-
-
-}
-bool walkcheck(int x, int y, int id) {
-	string piece = mark[id].first;
-	string color = mark[id].second;
-	int sx = startlocation[id].first, sy = startlocation[id].second;
-
-	// Direction modifier (1 for black, -1 for white)
-	int dir = (color == "black") ? 1 : -1;
-
-	if (piece == "pawn" && ispromoted[id] == 0) {
-		return (x == sx && y == sy + dir);
-	}
-
-	if (piece == "lance" && ispromoted[id] == 0) {
-		return (x == sx && y > sy && color == "black") || (x == sx && y < sy && color == "white");
-	}
-
-	if (piece == "knight" && ispromoted[id] == 0) {
-		return (x == sx + 1 && y == sy + 2 * dir) || (x == sx - 1 && y == sy + 2 * dir);
-	}
-
-	if (piece == "silver" && ispromoted[id] == 0) {
-		return (y == sy + dir && (x == sx - 1 || x == sx || x == sx + 1)) || (y == sy - dir && (x == sx - 1 || x == sx + 1));
-	}
-
-	if (piece == "gold" && ispromoted[id] == 0 || piece == "pawn" && ispromoted[id] == 1 || piece == "silver" && ispromoted[id] == 1 || piece == "knight" && ispromoted[id] == 1 || piece == "lance" && ispromoted[id] == 1) {
-		return (y == sy + dir && (x == sx - 1 || x == sx || x == sx + 1)) || (y == sy && (x == sx - 1 || x == sx + 1)) || (y == sy - dir && x == sx);
-	}
-
-	if (piece == "bishop" && ispromoted[id] == 0) {
-		return abs(x - sx) == abs(y - sy);
-	}
-	if (piece == "rook" && ispromoted[id] == 0) {
-		return (x == sx || y == sy);
-	}
-	if (piece == "king" && ispromoted[id] == 0) {
-		return abs(x - sx) <= 1 && abs(y - sy) <= 1;
-	}
-	if (piece == "bishop" && ispromoted[id] == 1) {
-		return abs(x - sx) == abs(y - sy) || (abs(x - sx) == 1 && abs(y - sy) == 0) || (abs(x - sx) == 0 && abs(y - sy) == 1);
-	}
-	if (piece == "rook" && ispromoted[id] == 1) {
-		return (x == sx || y == sy) || (abs(x - sx) == 1 && abs(y - sy) == 1);
-	}
-	return false;   
-
-}
-
-bool  occupiedcheck(int x, int y, int id) {
-	bool   occupied;
-	 
-
-
-
-	for (int i = 0; i < 40; i++)
-	{
-		if (x == startlocation[i].first && y == startlocation[i].second) {
-			 
-				occupied = false;
-			break;
-		}
-		else occupied = true;
-
-	}
-
-
-
-	return  occupied ;
-
-}
- 
-string enermycheck(int x, int y,   int id) {
-	string enermy;
-
-
-	for (int i = 0; i < 40; i++)
-	{
-		 
-		if (mark[i].second != mark[id].second&& x == startlocation[i].first && y == startlocation[i].second&& dead[i]==0) {
-			enermy = "enemy";
-			break;
-		}
-		else if(mark[i].second  == mark[id].second && x == startlocation[i].first && y == startlocation[i].second && dead[i] == 0)
-		{
-			enermy = "ally";
-			break;
-		}
-		
-		else {
-			enermy = "null";
-			 
-		}
-	}
-
-	
-	return enermy;
-
-}
-void promoted(int id) {
-	 
-
-	if (mark[id].first!="king"&& mark[id].first != "gold" &&(startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white"))
-	{
-		ispromoted[id] = 1;
-	}
-	 
-	
-
-
-
-
-}
-
+#include"shogiengine.h"
 int main()
 {
+	shogiengine shogi;
 	int size = 48; int count=0;
 	Texture moveabletile;
 	Texture attacktile;
@@ -310,26 +9,26 @@ int main()
 	RenderWindow window( VideoMode(1000, 500), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile("C:/Users/Loma/Desktop/shogi/SwordS.png");
-	moveabletile.loadFromFile("C:/Users/Loma/Desktop/shogi/movedot.png");
+	attacktile.loadFromFile(shogi.atktiletex);
+	moveabletile.loadFromFile(shogi.movetiletex);
 	bool spriteMoved = false;
-	item.loadFromFile(piece);
-	board.loadFromFile(boards);
+	item.loadFromFile(shogi.piece);
+	board.loadFromFile(shogi.boards);
 	Sprite b(board);
-	b.setPosition(::borderx, ::bordery);
+	b.setPosition(shogi.borderx, shogi.bordery);
 	for (int i = 0; i < 40; i++)
 	{
-		f[i].setTexture(item);
+		shogi.f[i].setTexture(item);
 
 	}
 	for (int i = 0; i < 81; i++)
 	{
-		 mvt[i].setTexture(moveabletile);
-		 atk[i].setTexture(attacktile);
+		shogi.mvt[i].setTexture(moveabletile);
+		shogi.atk[i].setTexture(attacktile);
 
 	}
-	loadsprite();
-	loadtile();
+	shogi.loadsprite();
+	shogi.loadtile();
 	while (window.isOpen())
 	{
 
@@ -339,43 +38,44 @@ int main()
 			if (event.type == Event::Closed)
 				window.close();
 			if (  Keyboard::isKeyPressed( Keyboard::R)) {
-				resetgame();
+				shogi.resetgame();
 			}
 
 				 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
 					 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 				     
-					  if (!spriteMoved&&showmove)
+					  if (!spriteMoved&& shogi.showmove)
 				 {
 
 				 
 					for (int j = 0; j < 81; j++)
 					{
 						 
-						if ( atk[j].getGlobalBounds().contains(mousePos)&&showatk[j] == 1) {
-							Vector2f position = atk[j].getPosition();
-							int x = int((position.x - ::borderx) / size);
-							int y = int((position.y - ::bordery) / size);
+						if (shogi.atk[j].getGlobalBounds().contains(mousePos)&& shogi.showatk[j] == 1) {
+							Vector2f position = shogi.atk[j].getPosition();
+							int x = int((position.x - shogi.borderx) / size);
+							int y = int((position.y - shogi.bordery) / size);
 							for (int i = 0; i < 40; i++)
 							{
-								if (x == startlocation[i].first && y == startlocation[i].second&&dead[i]==0) { amdead[i] = 1;cout << mark[i].first << " " << i << " dead" << endl;
+								if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second&& shogi.dead[i]==0) {
+									shogi.amdead[i] = 1;cout << shogi.mark[i].first << " " << i << " dead" << endl;
 								
 								 
 								break;
 								  }
 							}
 
-							startlocation[current].first = x;
-							startlocation[current].second = y;
+							shogi.startlocation[current].first = x;
+							shogi.startlocation[current].second = y;
 
-							::move = true;
+							shogi.move = true;
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-							promoted(current);
-							cout << current << " " << ispromoted[current] << endl;
-							showatk[j] = 0;
+							shogi.promoted(current);
+							cout << current << " " << shogi.ispromoted[current] << endl;
+							shogi.showatk[j] = 0;
 							cout << "isclickatk";
-							turn++;
+							shogi.turn++;
 							spriteMoved = true;
 							
 							
@@ -384,24 +84,24 @@ int main()
 
 						
 					}}
-				 if (!spriteMoved && showmove)
+				 if (!spriteMoved && shogi.showmove)
 				 {
 
 				 
 					for (int k = 0; k < 81; k++)
 					{
 						 
-						if (mvt[k].getGlobalBounds().contains(mousePos) &&showmvt[k]==1) {
-							Vector2f position = mvt[k].getPosition();
-							startlocation[current].first = (position.x-::borderx) / size;
-							startlocation[current].second = (position.y-::bordery) / size;
-							::move = true;
+						if (shogi.mvt[k].getGlobalBounds().contains(mousePos) && shogi.showmvt[k]==1) {
+							Vector2f position = shogi.mvt[k].getPosition();
+							shogi.startlocation[current].first = (position.x- shogi.borderx) / size;
+							shogi.startlocation[current].second = (position.y- shogi.bordery) / size;
+							shogi.move = true;
 							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-							promoted(current);
-							cout << current<<" "<<ispromoted[current] << endl;
-							showmvt[k] = 0;
+							shogi.promoted(current);
+							cout << current<<" "<< shogi.ispromoted[current] << endl;
+							shogi.showmvt[k] = 0;
 							cout << "isclickmvt";
-							turn++;
+							shogi.turn++;
 							spriteMoved = true;
 							 break;
 
@@ -420,21 +120,21 @@ int main()
 			{
 
 					 
-					if (!::move &&f[i].getGlobalBounds().contains(mousePos) && !showmove&& dead[i] ==0&&(turn%2==0&&mark[i].second=="black"|| turn % 2 == 1 && mark[i].second == "white")) {
+					if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove&& shogi.dead[i] ==0&&(shogi.turn%2==0&& shogi.mark[i].second=="black"|| shogi.turn % 2 == 1 && shogi.mark[i].second == "white")) {
 						current = i;
-						showmove = true;
+						shogi.showmove = true;
 						spriteMoved = false;
-						cout << dead[i] << endl;
+						cout << shogi.dead[i] << endl;
 
 						
 						break;
-					}  if (  showmove) {
+					}  if (shogi.showmove) {
 						 
-						showmove = false;
+						shogi.showmove = false;
 						for (int i = 0; i < 81; i++)
 						{
-							showmvt[i] = 0;
-							showatk[i] = 0;
+							shogi.showmvt[i] = 0;
+							shogi.showatk[i] = 0;
 						}
 						 
 						break;
@@ -477,9 +177,9 @@ int main()
 
 //cout <<   "," << showmove << " " << spriteMoved << " "  << endl;
 
-		if (::move)
+		if (shogi.move)
 		{
-			smoothmove(current);
+			shogi.smoothmove(current);
 		}
 
 
@@ -492,29 +192,31 @@ for (int i = 0; i < 40; i++)
 	
 	
 	
-	if(dead[i]==0)
-		window.draw(f[i]);
+	if(shogi.dead[i]==0)
+		window.draw(shogi.f[i]);
 
 
 
-	if ((turn % 2 == 0 && mark[i].second == "black" || turn % 2 == 1 && mark[i].second == "white") && ispromoted[i] == 1)
-	{f[i].setColor(sf::Color::Magenta);
-
-		
-
-	}
-	else if(ispromoted[i] == 1)
-	{f[i].setColor(sf::Color::Red);
-		
-
-	}
-	else if ((turn % 2 == 0 && mark[i].second == "black" || turn % 2 == 1 && mark[i].second == "white"))
+	if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && shogi.ispromoted[i] == 1)
 	{
-		f[i].setColor(sf::Color::Color(193,255,146,200));
+		shogi.f[i].setColor(sf::Color::Magenta);
+
+		
+
+	}
+	else if(shogi.ispromoted[i] == 1)
+	{
+		shogi.f[i].setColor(sf::Color::Red);
+		
+
+	}
+	else if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white"))
+	{
+		shogi.f[i].setColor(sf::Color::Color(193,255,146,200));
 	}
 	else
 	{
-f[i].setColor(sf::Color::White);
+		shogi.f[i].setColor(sf::Color::White);
 	}
 	 
 
@@ -522,7 +224,7 @@ f[i].setColor(sf::Color::White);
 
 
 	}
-	if (showmove)
+	if (shogi.showmove)
 	{
 
 	
@@ -530,18 +232,18 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (walkcheck(j, i, current)&&enermycheck(j, i, current) =="null"  && !isPathBlocked(j,i,current)  ) {
-				showmvt[i * 9 + j]=1;
-				window.draw(mvt[i * 9 + j]);  
+			if (shogi.walkcheck(j, i, current)&& shogi.enermycheck(j, i, current) =="null"  && !shogi.isPathBlocked(j,i,current)  ) {
+				shogi.showmvt[i * 9 + j]=1;
+				window.draw(shogi.mvt[i * 9 + j]);
 			}
-			else if(enermycheck(j, i, current)=="ally" && walkcheck(j, i, current))
+			else if(shogi.enermycheck(j, i, current)=="ally" && shogi.walkcheck(j, i, current))
 			{
 				 
 			}
-			else if (enermycheck(j, i, current)=="enemy" && walkcheck(j, i, current)  && !isPathBlocked(j, i, current)  )
+			else if (shogi.enermycheck(j, i, current)=="enemy" && shogi.walkcheck(j, i, current)  && !shogi.isPathBlocked(j, i, current)  )
 			{
-				showatk[i * 9 + j] = 1;
-				window.draw(atk[i * 9 + j]);
+				shogi.showatk[i * 9 + j] = 1;
+				window.draw(shogi.atk[i * 9 + j]);
 			}
 
 
