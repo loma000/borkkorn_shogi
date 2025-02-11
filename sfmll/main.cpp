@@ -32,7 +32,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
 		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}
 	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
-	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-7,-2,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,7,2,8,8,8,8,8,8,8,8,8 
+	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8 
 						   };
 	Sprite atk[81];
 
@@ -50,13 +50,13 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 
 
 	void smoothmove(int current) { 
-		float speed = 0.07;
+		float speed = 0.8;
 		Vector2f target(startlocation[current].first*::size, startlocation[current].second*::size);
 	
 	Vector2f shogilocate = f[current].getPosition();
 	Vector2f direction = target - shogilocate;
 	float length =  sqrt(direction.x * direction.x + direction.y * direction.y);
-	if (length > 0.1f) {   
+	if (length > 0.5) {   
 		direction /= length;
 		 
 		f[current].move(direction * speed);   
@@ -67,6 +67,7 @@ vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,
 		for (int i = 0; i < 40; i++)
 		{
 			dead[i] = amdead[i];
+			f[i].setPosition(::size * startlocation[i].first, ::size * startlocation[i].second);
 		}
 	}
 	}
@@ -288,7 +289,7 @@ string enermycheck(int x, int y,   int id) {
 void promoted(int id) {
 	 
 
-	if ( startlocation[id].second >= 6 && mark[id].second == "black"|| startlocation[id].second <= 2 && mark[id].second == "white")
+	if (mark[id].first=="king"&& mark[id].first == "gold" &&(startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white"))
 	{
 		ispromoted[id] = 1;
 	}
@@ -508,7 +509,7 @@ for (int i = 0; i < 40; i++)
 	}
 	else if ((turn % 2 == 0 && mark[i].second == "black" || turn % 2 == 1 && mark[i].second == "white"))
 	{
-		f[i].setColor(sf::Color::Yellow);
+		f[i].setColor(sf::Color::Color(193,255,146,200));
 	}
 	else
 	{
