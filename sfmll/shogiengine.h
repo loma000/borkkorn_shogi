@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-
+#pragma once
 using namespace std;
 using namespace sf;
 
@@ -27,10 +27,7 @@ public:
 
 
 
-	string boards = "C:/Users/Loma/Desktop/shogi/BambooBoard.png";
-	string atktiletex = "C:/Users/Loma/Desktop/shogi/SwordS.png";
-	string movetiletex = "C:/Users/Loma/Desktop/shogi/movedot.png";
-	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
+	
 	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
 	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
 		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}

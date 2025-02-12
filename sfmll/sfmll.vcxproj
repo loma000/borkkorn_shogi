@@ -136,6 +136,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="kaipushpongtai.h" />
     <ClInclude Include="shogiengine.h" />
     <ClInclude Include="ui.h" />
   </ItemGroup>

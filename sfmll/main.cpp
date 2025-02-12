@@ -1,5 +1,6 @@
 #include"shogiengine.h"
-
+#include"ui.h"
+#include"kaipushpongtai.h"
 
 
 
@@ -7,6 +8,7 @@
 
 int main()
 {
+	path path;
 	shogiengine shogi;
 	  int count=0;
 	Texture moveabletile;
@@ -15,11 +17,11 @@ int main()
 	RenderWindow window( VideoMode(1000, 500), "maibork");
 	Texture item;
 	Texture board;
-	attacktile.loadFromFile(shogi.atktiletex);
-	moveabletile.loadFromFile(shogi.movetiletex);
+	attacktile.loadFromFile(path.atktiletex);
+	moveabletile.loadFromFile(path.movetiletex);
 	bool spriteMoved = false;
-	item.loadFromFile(shogi.piece);
-	board.loadFromFile(shogi.boards);
+	item.loadFromFile(path.piece);
+	board.loadFromFile(path.boards);
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
 	for (int i = 0; i < 40; i++)
