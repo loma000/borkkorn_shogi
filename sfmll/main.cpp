@@ -37,6 +37,7 @@ int main()
 	}
 	shogi.loadsprite();
 	shogi.loadtile();
+	window.setFramerateLimit(100);
 	while (window.isOpen())
 	{
 

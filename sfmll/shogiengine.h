@@ -71,13 +71,13 @@ public:
 
 
 void shogiengine::smoothmove(int current) {
-	float speed = 0.8;
+	float speed =4;
 	Vector2f target(startlocation[current].first * size + borderx, startlocation[current].second * size + bordery);
 
 	Vector2f shogilocate = f[current].getPosition();
 	Vector2f direction = target - shogilocate;
 	float length = sqrt(direction.x * direction.x + direction.y * direction.y);
-	if (length > 0.5) {
+	if (length > 1) {
 		direction /= length;
 
 		f[current].move(direction * speed);
