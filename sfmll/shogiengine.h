@@ -45,7 +45,7 @@ public:
 
 	Sprite f[40];
 	Sprite mvt[81];
-	int turn = 1;
+	static int turn ;
 	int size = 48;
 	bool move = false;
 	int borderx = 40;
@@ -66,7 +66,7 @@ public:
 
 };
 
-
+int shogiengine::turn = 1;
 
 
 

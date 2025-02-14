@@ -1,16 +1,17 @@
 #include"shogiengine.h"
 #include"ui.h"
 #include"kaipushpongtai.h"
-
+#include"aieiei.h"
 
 
 
 
 int main()
-{
+{ 
 	path path;
 	shogiengine shogi;
 	  int count=0;
+	   
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
@@ -49,6 +50,7 @@ int main()
 			if (  Keyboard::isKeyPressed( Keyboard::R)) {
 				shogi.resetgame();
 			}
+			 
 
 				 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 

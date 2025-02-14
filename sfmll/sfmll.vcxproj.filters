@@ -29,5 +29,8 @@
     <ClInclude Include="kaipushpongtai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="aieiei.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
