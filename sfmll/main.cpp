@@ -29,12 +29,18 @@ int main()
 		shogi.f[i].setTexture(item);
 
 	}
+	for (int i = 0; i <16; i++)
+	{
+		shogi.capturedSprites2[i].setTexture(item);
+
+	}
 	for (int i = 0; i < 81; i++)
 	{
 		shogi.mvt[i].setTexture(moveabletile);
 		shogi.atk[i].setTexture(attacktile);
 
 	}
+	shogi.loadcapturesprite();
 	shogi.loadsprite();
 	shogi.loadtile();
 	window.setFramerateLimit(100);
@@ -232,7 +238,10 @@ for (int i = 0; i < 9; i++)
 		}
 
 	}}
-	 
+	for (int i = 0; i < 16; i++)
+	{
+		window.draw(shogi.capturedSprites2[i]);
+	}
 	shogi.capturePiece(current);
 	shogi.drawCapturedPieces(window);
 	//cout << current<<showmove;

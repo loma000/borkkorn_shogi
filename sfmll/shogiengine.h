@@ -34,6 +34,10 @@ public:
 	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
 	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8
 	};
+
+
+	vector<int> capturepawnid = { -1,-2,-3,-4,-5,-7,-8,-9,1,2,3,4,5,7,8,9
+	};
 	Sprite atk[81];
 
 
@@ -54,7 +58,7 @@ public:
 
 	vector<int> capturedPieces; // Store captured piece indices
 	Sprite capturedSprites[40]; // Sprites for captured pieces
-
+	Sprite capturedSprites2[16];
 	void smoothmove(int);
 	void resetgame();
 	bool isPathBlocked(int, int, int);
@@ -66,7 +70,7 @@ public:
 	void promoted(int);
 	void capturePiece(int);
 	void drawCapturedPieces(RenderWindow&);
-
+	void loadcapturesprite();
 
 
 };
@@ -345,4 +349,32 @@ void shogiengine::drawCapturedPieces(RenderWindow& window) {
 		capturedSprites[idx].setPosition(borderx + size * 9, bordery + i * size);
 		window.draw(capturedSprites[idx]);
 	}
+}
+
+
+void shogiengine::loadcapturesprite() {
+
+
+	for (int i = 0; i < 16; i++)
+	{
+		 
+		int n = capturepawnid[i];
+		int x = abs(n) - 1;
+		int y = i <  8 ? 0 : 1;
+		capturedSprites2[i].setTextureRect(IntRect(size * x, size * y, size, size));
+		
+		
+		if (i<8)
+		{
+		capturedSprites2[i].setPosition(  borderx-size, size * i + bordery );
+
+		}
+		else
+		{
+			 
+			capturedSprites2[i].setPosition(borderx + size*9, size * (i-8) + bordery +  size);
+		}
+		
+	}
+
 }
