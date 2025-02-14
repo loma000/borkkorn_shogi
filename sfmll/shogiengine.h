@@ -42,7 +42,7 @@ public:
 	int  showmvt[81];
 	int dead[40];
 	int ispromoted[40];
-
+	int iscapture[40];
 	Sprite f[40];
 	Sprite mvt[81];
 	int turn = 1;
@@ -52,15 +52,20 @@ public:
 	int bordery = 40;
 
 
+	vector<int> capturedPieces; // Store captured piece indices
+	Sprite capturedSprites[40]; // Sprites for captured pieces
+
 	void smoothmove(int);
-	void  resetgame();
+	void resetgame();
 	bool isPathBlocked(int, int, int);
 	void loadsprite();
 	void loadtile();
 	bool walkcheck(int, int, int);
-	bool  occupiedcheck(int, int, int);
+	bool occupiedcheck(int, int, int);
 	string enermycheck(int, int, int);
-	void  promoted(int);
+	void promoted(int);
+	void capturePiece(int);
+	void drawCapturedPieces(RenderWindow&);
 
 
 
@@ -316,4 +321,28 @@ void shogiengine::promoted(int id) {
 
 
 
+}
+
+
+
+
+void shogiengine::capturePiece(int index) {
+
+	for (int i = 0; i < 40; i++)
+	{ if(dead[i] == 1&&iscapture[i] == 0) {
+capturedPieces.push_back(i);
+iscapture[i] =1;
+	cout << "Piece " << i << " captured!" << endl;}
+	}
+	
+	
+}
+
+void shogiengine::drawCapturedPieces(RenderWindow& window) {
+	for (size_t i = 0; i < capturedPieces.size(); i++) {
+		int idx = capturedPieces[i];
+		capturedSprites[idx] = f[idx];
+		capturedSprites[idx].setPosition(borderx + size * 9, bordery + i * size);
+		window.draw(capturedSprites[idx]);
+	}
 }

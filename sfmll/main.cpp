@@ -233,8 +233,8 @@ for (int i = 0; i < 9; i++)
 
 	}}
 	 
-	
-
+	shogi.capturePiece(current);
+	shogi.drawCapturedPieces(window);
 	//cout << current<<showmove;
 
 		
