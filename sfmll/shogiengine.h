@@ -34,6 +34,10 @@ public:
 	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
 	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8
 	};
+
+
+	vector<int> capturepawnid = { -1,-2,-3,-4,-5,-7,-8,-9,1,2,3,4,5,7,8,9
+	};
 	Sprite atk[81];
 
 
@@ -42,7 +46,7 @@ public:
 	int  showmvt[81];
 	int dead[40];
 	int ispromoted[40];
-
+	int iscapture[40];
 	Sprite f[40];
 	Sprite mvt[81];
 	static int turn ;
@@ -52,16 +56,21 @@ public:
 	int bordery = 40;
 
 
+	vector<int> capturedPieces; // Store captured piece indices
+	Sprite capturedSprites[40]; // Sprites for captured pieces
+	Sprite capturedSprites2[16];
 	void smoothmove(int);
-	void  resetgame();
+	void resetgame();
 	bool isPathBlocked(int, int, int);
 	void loadsprite();
 	void loadtile();
 	bool walkcheck(int, int, int);
-	bool  occupiedcheck(int, int, int);
+	bool occupiedcheck(int, int, int);
 	string enermycheck(int, int, int);
-	void  promoted(int);
-
+	void promoted(int);
+	void capturePiece(int);
+	void drawCapturedPieces(RenderWindow&);
+	void loadcapturesprite();
 
 
 };
@@ -315,5 +324,57 @@ void shogiengine::promoted(int id) {
 
 
 
+
+}
+
+
+
+
+void shogiengine::capturePiece(int index) {
+
+	for (int i = 0; i < 40; i++)
+	{ if(dead[i] == 1&&iscapture[i] == 0) {
+capturedPieces.push_back(i);
+iscapture[i] =1;
+	cout << "Piece " << i << " captured!" << endl;}
+	}
+	
+	
+}
+
+void shogiengine::drawCapturedPieces(RenderWindow& window) {
+	for (size_t i = 0; i < capturedPieces.size(); i++) {
+		int idx = capturedPieces[i];
+		capturedSprites[idx] = f[idx];
+		capturedSprites[idx].setPosition(borderx + size * 9, bordery + i * size);
+		window.draw(capturedSprites[idx]);
+	}
+}
+
+
+void shogiengine::loadcapturesprite() {
+
+
+	for (int i = 0; i < 16; i++)
+	{
+		 
+		int n = capturepawnid[i];
+		int x = abs(n) - 1;
+		int y = i <  8 ? 0 : 1;
+		capturedSprites2[i].setTextureRect(IntRect(size * x, size * y, size, size));
+		
+		
+		if (i<8)
+		{
+		capturedSprites2[i].setPosition(  borderx-size, size * i + bordery );
+
+		}
+		else
+		{
+			 
+			capturedSprites2[i].setPosition(borderx + size*9, size * (i-8) + bordery +  size);
+		}
+		
+	}
 
 }
