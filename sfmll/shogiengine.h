@@ -36,11 +36,14 @@ public:
 	};
 
 
-	vector<int> capturepawnid = { -1,-2,-3,-4,-5,-7,-8,-9,1,2,3,4,5,7,8,9
-	};
+	vector<int> capturepawnid = {  -2,-3,-4,-5,-7,-8,-9, 2,3,4,5,7,8,9 };
+	vector<pair<string, string>> deathmark = { {"rook","white"},{"gold","white"},{"silver","white"} ,{ "knight","white" },{"bishop","white"} ,{ "pawn","white" },{"lance","white"} 
+	,{"rook", "black" },{"gold","black"},{"silver","black"} ,{ "knight","black" },{"bishop","black"} ,{ "pawn","black" },{"lance","black"} };
+	int deathcount[14];
+
 	Sprite atk[81];
 
-
+	int alreadydead[40];
 	int amdead[40];
 	int  showatk[81];
 	int  showmvt[81];
@@ -54,8 +57,8 @@ public:
 	bool move = false;
 	int borderx = 40;
 	int bordery = 40;
-
-
+	bool normalsprite = false;
+	bool deathsprite = false;
 	vector<int> capturedPieces; // Store captured piece indices
 	Sprite capturedSprites[40]; // Sprites for captured pieces
 	Sprite capturedSprites2[16];
@@ -71,7 +74,8 @@ public:
 	void capturePiece(int);
 	void drawCapturedPieces(RenderWindow&);
 	void loadcapturesprite();
-
+	void diecount();
+	bool dropCheck(int, int, int);
 
 };
 
@@ -343,28 +347,46 @@ iscapture[i] =1;
 }
 
 void shogiengine::drawCapturedPieces(RenderWindow& window) {
-	for (size_t i = 0; i < capturedPieces.size(); i++) {
-		int idx = capturedPieces[i];
-		capturedSprites[idx] = f[idx];
-		capturedSprites[idx].setPosition(borderx + size * 9, bordery + i * size);
-		window.draw(capturedSprites[idx]);
+	for (int i = 0; i < 14; i++)
+	{
+		if (deathcount[i]>0)
+		{
+			 
+window.draw( capturedSprites2[i]);
+		}
+		
 	}
 }
+void shogiengine::diecount() { 
+	for (int i = 0;i < 40;i++) {
+		for (int j = 0; j < 14; j++)
+		{
+			if (dead[i] == 1 && mark[i] == deathmark[j]&& alreadydead[i] ==0)
+			{
+				alreadydead[i]=1;
+				deathcount[j]++;
+				break;
+			}
+		}
+	}
+		
 
+
+} 
 
 void shogiengine::loadcapturesprite() {
 
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 14; i++)
 	{
 		 
 		int n = capturepawnid[i];
 		int x = abs(n) - 1;
-		int y = i <  8 ? 0 : 1;
+		int y = i <  7 ? 0 : 1;
 		capturedSprites2[i].setTextureRect(IntRect(size * x, size * y, size, size));
 		
 		
-		if (i<8)
+		if (i<7)
 		{
 		capturedSprites2[i].setPosition(  borderx-size, size * i + bordery );
 
@@ -372,9 +394,60 @@ void shogiengine::loadcapturesprite() {
 		else
 		{
 			 
-			capturedSprites2[i].setPosition(borderx + size*9, size * (i-8) + bordery +  size);
+			capturedSprites2[i].setPosition(borderx + size*9, size * (i-7) + bordery +  2*size);
 		}
 		
 	}
 
+}
+bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
+	// Board bounds check (assuming 9x9 board: indices 0 to 8)
+	if (x < 0 || x >= 9 || y < 0 || y >= 9)
+		return false;
+
+	// 1. Check that the target square is empty.
+	for (int i = 0; i < 40; i++) {
+		if (dead[i] == 0 && startlocation[i].first == x && startlocation[i].second == y) {
+			return false;  // The square is occupied.
+		}
+	}
+
+	// Retrieve piece type and color.
+	// If dropping a captured piece (deathsprite active), use deathmark vector;
+	// otherwise, use the normal mark vector.
+	string piece, color;
+	if (deathsprite) {
+		piece = deathmark[pieceIndex].first;
+		color = deathmark[pieceIndex].second;
+	}
+	else {
+		piece = mark[pieceIndex].first;
+		color = mark[pieceIndex].second;
+	}
+
+	// 2. Promotion zone restrictions:
+	// For Pawn and Lance, cannot drop on the last rank (for black, y == 8; for white, y == 0).
+	if (piece == "pawn" || piece == "lance") {
+		if ((color == "black" && y == 8) || (color == "white" && y == 0))
+			return false;
+	}
+	// For Knight, cannot drop on the last two ranks.
+	if (piece == "knight") {
+		if ((color == "black" && y >= 7) || (color == "white" && y <= 1))
+			return false;
+	}
+
+	// 3. Pawn drop rule (Nifu):
+	// A player may not drop a pawn in a file (column) that already has an unpromoted pawn of the same color.
+	if (piece == "pawn") {
+		for (int i = 0; i < 40; i++) {
+			if (dead[i] == 0 && mark[i].first == "pawn" && mark[i].second == color && ispromoted[i] == 0) {
+				if (startlocation[i].first == x)
+					return false;
+			}
+		}
+	}
+
+	// All checks passed: the drop is valid.
+	return true;
 }

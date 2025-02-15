@@ -77,12 +77,20 @@ int main()
 							{
 								if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second&& shogi.dead[i]==0) {
 									shogi.amdead[i] = 1;cout << shogi.mark[i].first << " " << i << " dead" << endl;
-								
+									shogi.ispromoted[i] = 0;
 								 
 								break;
 								  }
 							}
 
+							
+
+
+
+
+
+						
+							shogi.normalsprite = false;
 							shogi.startlocation[current].first = x;
 							shogi.startlocation[current].second = y;
 
@@ -110,13 +118,50 @@ int main()
 						 
 						if (shogi.mvt[k].getGlobalBounds().contains(mousePos) && shogi.showmvt[k]==1) {
 							Vector2f position = shogi.mvt[k].getPosition();
+							
+							if (shogi.deathsprite)
+							{shogi.deathcount[current]--;
+								
+								for (int i = 0; i < 40; i++)
+								{
+								if(shogi.deathmark[current]==shogi.mark[i]&&shogi.dead[i]==1) {
+									if (shogi.mark[i].second=="black")
+									{
+										shogi.mark[i].second = "white";
+									}else shogi.mark[i].second = "black";
+									shogi.amdead[i] = 0;
+									shogi. dead[i] = 0;
+									shogi.alreadydead[i] = 0;
+									shogi.pawnid[i] *= -1;  
+
+									cout << shogi.deathcount[current];
+									current = i;
+									shogi.loadsprite();
+									break;
+								}
+								}
+							}
+							
+							
 							shogi.startlocation[current].first = (position.x- shogi.borderx) / shogi.size;
 							shogi.startlocation[current].second = (position.y- shogi.bordery) / shogi.size;
-							shogi.move = true;
-							//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+							if (shogi.normalsprite)
+							{
+shogi.move = true;
+							}
+							else
+							{
+								cout << "sus";
+shogi.f[current].setPosition(shogi.size * shogi.startlocation[current].first+ shogi.borderx, shogi.size * shogi.startlocation[current].second+ shogi.bordery);
+							}
+							
+							
 							shogi.promoted(current);
 							cout << current<<" "<< shogi.ispromoted[current] << endl;
 							shogi.showmvt[k] = 0;
+	shogi.deathsprite = false;
+
+							shogi.normalsprite = false;
 							cout << "isclickmvt";
 							shogi.turn++;
 							spriteMoved = true;
@@ -126,7 +171,21 @@ int main()
 					}
 }
 
-					
+					if (shogi.showmove) {
+						 
+						shogi.showmove = false;
+						for (int i = 0; i < 81; i++)
+						{
+							shogi.normalsprite = false;
+							shogi.deathsprite =false;
+							shogi.showmvt[i] = 0;
+							shogi.showatk[i] = 0;
+						}
+						 
+						break;
+
+						 
+					}
 					 
 					 for (int i = 0; i < 40; i++)
 			{
@@ -137,25 +196,27 @@ int main()
 						shogi.showmove = true;
 						spriteMoved = false;
 						cout << shogi.dead[i] << endl;
-
+						shogi.normalsprite = true;
 						
 						break;
-					}  if (shogi.showmove) {
-						 
-						shogi.showmove = false;
-						for (int i = 0; i < 81; i++)
-						{
-							shogi.showmvt[i] = 0;
-							shogi.showatk[i] = 0;
-						}
-						 
-						break;
-
-						 
-					}
+					}  
 					} 
 
+					 for (int i = 0; i < 14; i++)
+					 {
 
+
+
+						 if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove  && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black")) {
+							 current = i;
+							 shogi.showmove = true;
+							 spriteMoved = false;
+							 cout << current << endl;
+							 shogi.deathsprite = true;
+
+							 break;
+						 }  
+					 }
 
 				
 			}
@@ -222,7 +283,7 @@ for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (shogi.walkcheck(j, i, current)&& shogi.enermycheck(j, i, current) =="null"  && !shogi.isPathBlocked(j,i,current)  ) {
+			if (shogi.enermycheck(j, i, current) == "null" && ((shogi.walkcheck(j, i, current) && shogi.normalsprite) ||  shogi.dropCheck(j,i,current) &&shogi.deathsprite) && !shogi.isPathBlocked(j, i, current)) {
 				shogi.showmvt[i * 9 + j]=1;
 				window.draw(shogi.mvt[i * 9 + j]);
 			}
@@ -240,12 +301,14 @@ for (int i = 0; i < 9; i++)
 		}
 
 	}}
-	for (int i = 0; i < 16; i++)
+
+	if (!shogi.move)
 	{
-		window.draw(shogi.capturedSprites2[i]);
+shogi.diecount();
+	
 	}
-	shogi.capturePiece(current);
 	shogi.drawCapturedPieces(window);
+	 
 	//cout << current<<showmove;
 
 		
