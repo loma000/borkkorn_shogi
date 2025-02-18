@@ -17,4 +17,5 @@ public:
 	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
 
 
+
 };
