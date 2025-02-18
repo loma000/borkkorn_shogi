@@ -50,6 +50,8 @@ public:
 	int dead[40];
 	int ispromoted[40];
 	int iscapture[40];
+	int isdropped[40];
+
 	Sprite f[40];
 	Sprite mvt[81];
 	static int turn ;
@@ -76,6 +78,7 @@ public:
 	void loadcapturesprite();
 	void diecount();
 	bool dropCheck(int, int, int);
+
 
 };
 
@@ -326,6 +329,7 @@ void shogiengine::promoted(int id) {
 		ispromoted[id] = 1;
 	}
 
+	
 
 
 
@@ -428,12 +432,12 @@ bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
 	// 2. Promotion zone restrictions:
 	// For Pawn and Lance, cannot drop on the last rank (for black, y == 8; for white, y == 0).
 	if (piece == "pawn" || piece == "lance") {
-		if ((color == "black" && y == 8) || (color == "white" && y == 0))
+		if ((color == "black" && y == 0) || (color == "white" && y ==8))
 			return false;
 	}
 	// For Knight, cannot drop on the last two ranks.
 	if (piece == "knight") {
-		if ((color == "black" && y >= 7) || (color == "white" && y <= 1))
+		if ((color == "black" && y <= 1) || (color == "white" && y>= 7))
 			return false;
 	}
 
@@ -441,13 +445,17 @@ bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
 	// A player may not drop a pawn in a file (column) that already has an unpromoted pawn of the same color.
 	if (piece == "pawn") {
 		for (int i = 0; i < 40; i++) {
-			if (dead[i] == 0 && mark[i].first == "pawn" && mark[i].second == color && ispromoted[i] == 0) {
+			if (dead[i] == 0 && mark[i].first == "pawn" && mark[i].second != color && ispromoted[i] == 0) {
 				if (startlocation[i].first == x)
 					return false;
 			}
 		}
 	}
-
 	// All checks passed: the drop is valid.
+	isdropped[pieceIndex] = 0;
 	return true;
 }
+
+
+
+
