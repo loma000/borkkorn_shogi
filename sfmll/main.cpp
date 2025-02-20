@@ -439,12 +439,12 @@ for (int i = 0; i < 40; i++)
 	}
 	 
 
-
+	
 
 
 	}
 if (shogi.showmove)
-{
+{shogi.f[current].setColor(Color::Yellow);
 
 
 	for (int i = 0; i < 9; i++)
