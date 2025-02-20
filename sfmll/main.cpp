@@ -400,7 +400,7 @@ int main()
 		window.draw(tutorialSprite);
 	}
 	else if(Gamestatus){
-		//window.draw(backgroud);
+		 window.draw(backgroud);
 window.draw(b);
 for (int i = 0; i < 40; i++)
 	{
@@ -414,24 +414,24 @@ for (int i = 0; i < 40; i++)
 
 	if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && shogi.ispromoted[i] == 1)
 	{
-		shogi.f[i].setColor(sf::Color::Magenta);
+		shogi.f[i].setColor( Color::Magenta);
 
 		
 
 	}
 	else if(shogi.ispromoted[i] == 1)
 	{
-		shogi.f[i].setColor(sf::Color::Red);
+		shogi.f[i].setColor( Color::Red);
 		
 
 	}
 	else if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white"))
 	{
-		shogi.f[i].setColor(sf::Color::Color(193,255,146,200));
+		shogi.f[i].setColor( Color::Color(193,255,146,200));
 	}
 	else
 	{
-		shogi.f[i].setColor(sf::Color::White);
+		shogi.f[i].setColor( Color::White);
 	}
 	 
 
