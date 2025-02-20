@@ -11,11 +11,17 @@ class path
 public:
 	    
 	   
-	string boards = "asset/BambooBoard.png";
+	string boards = "asset/board.png";
 	string atktiletex = "asset/SwordS.png";
-	string movetiletex = "asset/movedot.png";
-	string piece = "asset/pieces.png";
+	string movetiletex = "asset/moveable.png";
+	string piece = "asset/pawn.png";
+	string backgroud = "asset/Sideboard.png";
+	string tt1 = "asset/1.png";
+	string tt2 = "asset/2.png";
+	string tt3 = "asset/3.png";
+	string tt4 = "asset/4.png";
 	string yestexe = "asset/yes.png";
-		string notexe = "asset/no.png";
-		string gambletex = "asset/gamble.png";
+	string notexe = "asset/no.png";
+	string gambletex = "asset/gamble.png";
+
 };
