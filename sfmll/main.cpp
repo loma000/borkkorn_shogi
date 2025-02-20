@@ -56,19 +56,21 @@ bool ui::isExitClicked(Vector2f mousePos)
 
 
 int main()
-{ 
+{
+	srand(time(0));
 	path path;
 	shogiengine shogi;
 	  int count=0;
 	  Texture back ;
-	  back.loadFromFile(path.backgroud);
-	  Sprite backgroud(back);
+	//  back.loadFromFile(path.backgroud);
+	//  Sprite backgroud(back);
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
 	RenderWindow window( VideoMode(1000, 500), "maibork");
 	Texture item;
 	Texture board;
+	shogi.loadtextureyesno(path);
 	attacktile.loadFromFile(path.atktiletex);
 	moveabletile.loadFromFile(path.movetiletex);
 	bool spriteMoved = false;
@@ -175,7 +177,7 @@ int main()
 								shogi.startlocation[current].first = x;
 								shogi.startlocation[current].second = y;
 
-								shogi.move = true;
+								 
 								//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 								shogi.promoted(current);
 								cout << current << " " << shogi.ispromoted[current] << endl;
@@ -231,7 +233,7 @@ int main()
 								shogi.startlocation[current].second = (position.y - shogi.bordery) / shogi.size;
 								if (shogi.normalsprite)
 								{
-									shogi.move = true;
+									 
 									shogi.promoted(current);
 								}
 								else
@@ -255,9 +257,13 @@ int main()
 							}
 						}
 					}
-
+					if (shogi.gamble.getGlobalBounds().contains(mousePos) && shogi.gambleon) {
+						shogi.turn++;
+						shogi.gamblechange(current);
+						shogi.gambleon = false;
+					}
 					if (shogi.showmove) {
-
+						shogi.gambleon = false;
 						shogi.showmove = false;
 						for (int i = 0; i < 81; i++)
 						{
@@ -276,7 +282,7 @@ int main()
 					{
 
 
-						if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white")) {
+						if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white")&&!shogi.promotecheck) {
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
@@ -292,17 +298,27 @@ int main()
 
 
 
-						if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black")) {
+						if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black")&& shogi.showdeadmark[i] == 1&&!shogi.promotecheck) {
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
 							cout << current << endl;
 							shogi.deathsprite = true;
-
+							shogi.gambleon = true;
 							break;
 						}
 					}
+					if (  shogi.yes.getGlobalBounds().contains(mousePos)&&shogi.promotecheck  ) {
+						 
+						shogi.move = true;
+						shogi.ispromoted[current] = 1;
+						shogi.promotecheck = false;
+						 }
+					if (shogi.no.getGlobalBounds().contains(mousePos) && shogi.promotecheck) {
 
+							 shogi.move = true;
+							 shogi.promotecheck = false;
+						 }
 
 				}
 
@@ -333,7 +349,7 @@ int main()
 		
 	}
 	else if(Gamestatus){
-		window.draw(backgroud);
+		//window.draw(backgroud);
 window.draw(b);
 for (int i = 0; i < 40; i++)
 	{
@@ -401,14 +417,18 @@ if (shogi.showmove)
 }
 	
 	}
-
+	shogi.drawpromotecheck(window);
 	if (!shogi.move)
 	{
 shogi.diecount();
 	
 	}
 	shogi.drawCapturedPieces(window);
-	 
+	if (shogi.gambleon)
+	{
+window.draw(shogi.gamble);
+	}
+	
 	//cout << current<<showmove;
 
 		

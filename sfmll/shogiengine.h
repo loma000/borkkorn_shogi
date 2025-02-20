@@ -1,14 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include"kaipushpongtai.h"
+#include<cstdlib>
+#include<ctime>
 #pragma once
 using namespace std;
 using namespace sf;
 
-class shogiengine
+class shogiengine  
 {
 public:
-
+	 
 	bool showmove = false;
 	vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
@@ -40,18 +43,23 @@ public:
 	vector<pair<string, string>> deathmark = { {"rook","white"},{"gold","white"},{"silver","white"} ,{ "knight","white" },{"bishop","white"} ,{ "pawn","white" },{"lance","white"} 
 	,{"rook", "black" },{"gold","black"},{"silver","black"} ,{ "knight","black" },{"bishop","black"} ,{ "pawn","black" },{"lance","black"} };
 	int deathcount[14];
-
+	Sprite gamble;
 	Sprite atk[81];
-
+	Texture yestex;
+	Texture notex;
+	Texture gambletex;
+	Sprite yes;
+	Sprite no;
 	int alreadydead[40];
 	int amdead[40];
 	int  showatk[81];
 	int  showmvt[81];
+	int showdeadmark[14];
 	int dead[40];
 	int ispromoted[40];
 	int iscapture[40];
 	int isdropped[40];
-
+	bool promotecheck = false;
 	Sprite f[40];
 	Sprite mvt[81];
 	static int turn ;
@@ -59,6 +67,7 @@ public:
 	bool move = false;
 	int borderx = 40;
 	int bordery = 40;
+	bool gambleon = false;
 	bool normalsprite = false;
 	bool deathsprite = false;
 	vector<int> capturedPieces; // Store captured piece indices
@@ -78,13 +87,99 @@ public:
 	void loadcapturesprite();
 	void diecount();
 	bool dropCheck(int, int, int);
-
-
+	void loadtextureyesno(path     );
+	void drawpromotecheck(RenderWindow&);
+	int gamblechange(int  );
 };
 
 int shogiengine::turn = 1;
+int shogiengine :: gamblechange(int id){
+	deathcount[id]--;
+	string name = deathmark[id].first;
+	string color = deathmark[id].second;
+	string namechange;
+	int idchange;
+	switch (rand()%8+1)
+	{
+	case 1:
+		namechange = "rook";
+		idchange = 2;
+break;
+	case 2:
+		namechange = "gold";
+		idchange = 3;
+		break;
+	case 3:
+		namechange = "silver";
+		idchange = 4;
+		break;
+	case 4:
+		namechange = "knight";
+		idchange = 5;
+		break;
+	case 5:
+		namechange = "bishop";
+		idchange = 7;
+		break;
+	case 6:
+		namechange = "pawn";
+		idchange = 8;
+		break;
+	case 7:
+		namechange = "lance";
+		idchange = 9;
+		break;
+	case 8:
+		return 0;
+		break;
+	}
+
+	for (int i = 0; i < 14; i++)
+	{
+		if (deathmark[i].first == namechange && deathmark[i].second == color) {
+
+			deathcount[i]++;
+			break;
+		}
 
 
+	}
+
+	for (int i = 0; i < 40; i++)
+	{
+		if (deathmark[id] == mark[i]&&dead[i]==1) {
+
+			idchange = color == "black" ? idchange * -1 : idchange;
+			pawnid[i] = idchange;
+			mark[i].first = namechange;
+			break;
+		}
+	}
+
+	return 0;
+
+}
+void shogiengine::loadtextureyesno(path  p) {
+	gambletex.loadFromFile(p.gambletex);
+	yestex.loadFromFile(  p.yestexe);
+	notex.loadFromFile( p.notexe);
+	yes.setTexture(yestex);
+	no.setTexture(notex);
+	gamble.setTexture(gambletex);
+	yes.setPosition(76 + borderx, 196 + bordery);
+	no.setPosition(270 + borderx, 196 + bordery);
+	gamble.setPosition(465 + borderx, 213 + bordery);
+}
+
+
+void shogiengine::drawpromotecheck(RenderWindow& window){
+
+	if (promotecheck) {
+		window.draw(yes);
+		window.draw(no);
+}
+
+}
 
 void shogiengine::smoothmove(int current) {
 	float speed =4;
@@ -121,9 +216,11 @@ void shogiengine::resetgame() {
 		ispromoted[i] = 0;
 		turn = 1;
 		amdead[i] = 0;
+		alreadydead[i] = 0;
 	}
+	for (int i = 0;i < 14;i++) { deathcount[i] = 0; }
 
-
+	promotecheck = false;
 
 }
 
@@ -324,9 +421,13 @@ string shogiengine::enermycheck(int x, int y, int id) {
 void shogiengine::promoted(int id) {
 
 
-	if (mark[id].first != "king" && mark[id].first != "gold" && (startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white"))
+	if (mark[id].first != "king" && mark[id].first != "gold" && (startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white")&& ispromoted[id]==0)
 	{
-		ispromoted[id] = 1;
+		promotecheck = true;
+	}
+	else
+	{
+		move = true;
 	}
 
 	
@@ -355,9 +456,9 @@ void shogiengine::drawCapturedPieces(RenderWindow& window) {
 	{
 		if (deathcount[i]>0)
 		{
-			 
+			showdeadmark[i] = 1;
 window.draw( capturedSprites2[i]);
-		}
+		}else showdeadmark[i] = 0;
 		
 	}
 }

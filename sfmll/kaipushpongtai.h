@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include"shogiengine.h"
+ 
 using namespace std;
 using namespace sf;
 #pragma once
@@ -11,11 +11,11 @@ class path
 public:
 	    
 	   
-	string boards = "C:/Users/Loma/Desktop/shogi/BambooBoard.png";
-	string atktiletex = "C:/Users/Loma/Desktop/shogi/SwordS.png";
-	string movetiletex = "C:/Users/Loma/Desktop/shogi/movedot.png";
-	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
-
-
-
+	string boards = "asset/BambooBoard.png";
+	string atktiletex = "asset/SwordS.png";
+	string movetiletex = "asset/movedot.png";
+	string piece = "asset/pieces.png";
+	string yestexe = "asset/yes.png";
+		string notexe = "asset/no.png";
+		string gambletex = "asset/gamble.png";
 };
