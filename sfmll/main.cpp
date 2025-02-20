@@ -330,7 +330,7 @@ int main()
 							shogi.showatk[i] = 0;
 						}
 
-						break;
+						 
 
 
 					}

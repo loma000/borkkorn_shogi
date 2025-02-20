@@ -65,7 +65,7 @@ public:
 	static int turn ;
 	int size = 48;
 	bool move = false;
-	int borderx = 40;
+	int borderx = 70;
 	int bordery = 40;
 	bool gambleon = false;
 	bool normalsprite = false;
