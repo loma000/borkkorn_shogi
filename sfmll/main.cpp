@@ -139,13 +139,9 @@ int main()
 						TutorialScreen = true;
 					}
 						if (TutorialScreen) {
-							// Define buttons
-						
-							sf::FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
-							sf::FloatRect moveSetsButton(580, 380, 145, 45);
-							sf::FloatRect moveSets2Button(860, 400, 145, 45);
-							sf::FloatRect backButton(860, 20, 145, 45);
-
+							if (tutorialPage == 0) {
+								FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
+								FloatRect moveSetsButton(580, 380, 145, 45);
 								if (moreRulesButton.contains(mousePos)) {
 									cout << "1!" << endl;
 									tutorialPage = 1;
@@ -156,11 +152,18 @@ int main()
 									tutorialPage = 2;
 									tutorialSprite.setTexture(textures[tutorialPage]);
 								}
+							}
+							else if (tutorialPage == 2) {
+								FloatRect moveSets2Button(860, 400, 145, 45);
 								if (moveSets2Button.contains(mousePos)) {
 									cout << "3!" << endl;
 									tutorialPage = 3;
 									tutorialSprite.setTexture(textures[tutorialPage]);
 								}
+							}
+							FloatRect backButton(860, 20, 145, 45);
+
+								
 
 								if (backButton.contains(mousePos)) {
 									cout << "Back button clicked!" << endl;
@@ -168,11 +171,12 @@ int main()
 									if (tutorialPage == 3) {
 										tutorialPage = 2;  // Go from Page 3 to Page 2
 									}
-									else if (tutorialPage == 2) {
+									else if (tutorialPage == 2 || tutorialPage == 1) {
 										tutorialPage = 0;  // Go from Page 2 to Page 0
 									}
-									else if (tutorialPage == 1) {
-										tutorialPage = 0;  // Go from Page 1 to Page 0
+									else if (tutorialPage == 0) {
+										TutorialScreen = false;
+										
 									}
 
 									tutorialSprite.setTexture(textures[tutorialPage]);
