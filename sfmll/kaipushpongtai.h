@@ -11,10 +11,14 @@ class path
 public:
 	    
 	   
-	string boards = "C:/Users/Loma/Desktop/shogi/BambooBoard.png";
-	string atktiletex = "C:/Users/Loma/Desktop/shogi/SwordS.png";
-	string movetiletex = "C:/Users/Loma/Desktop/shogi/movedot.png";
-	string piece = "C:/Users/Loma/Desktop/shogi/pieces.png";
-
+	string boards = "asset/board.png";
+	string atktiletex = "asset/SwordS.png";
+	string movetiletex = "asset/moveable.png";
+	string piece = "asset/pawn.png";
+	string backgroud = "asset/Sideboard.png";
+	string tt1 = "asset/1.png";
+	string tt2 = "asset/2.png";
+	string tt3 = "asset/3.png";
+	string tt4 = "asset/4.png";
 
 };

@@ -59,10 +59,10 @@ int main()
 { 
 	path path;
 	shogiengine shogi;
-	  int count=0;
-	  Texture back ;
-	  back.loadFromFile(path.backgroud);
-	  Sprite backgroud(back);
+	int count=0;
+	Texture back ;
+	back.loadFromFile(path.backgroud);
+	Sprite backgroud(back);
 	Texture moveabletile;
 	Texture attacktile;
 	int current=0;
@@ -77,16 +77,17 @@ int main()
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
 	//mainmenu
-	vector<sf::Texture> textures(2);
-	textures[0].loadFromFile("1.png");
-	textures[1].loadFromFile("2.png");
-	//textures[2].loadFromFile("3.png");
+	vector<sf::Texture> textures(4);
+	textures[0].loadFromFile(path.tt1);
+	textures[1].loadFromFile(path.tt2);
+	textures[2].loadFromFile(path.tt3);
+	textures[3].loadFromFile(path.tt4);
 
-	vector<sf::Sprite> sprites(2);
-	for (size_t i = 0; i < sprites.size(); ++i) {
-		sprites[i].setTexture(textures[i]);
-		sprites[i].setPosition(1000, 00);  
-	}
+
+	Sprite tutorialSprite;
+	int tutorialPage = 0;
+	tutorialSprite.setTexture(textures[tutorialPage]);
+
 
 	bool Gamestatus = false;
 	bool TutorialScreen = false;
@@ -137,6 +138,58 @@ int main()
 						cout << " Clicked tutorial" << endl;
 						TutorialScreen = true;
 					}
+						if (TutorialScreen) {
+							// Define buttons
+						
+							sf::FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
+							sf::FloatRect moveSetsButton(580, 380, 145, 45);
+							sf::FloatRect moveSets2Button(860, 400, 145, 45);
+							sf::FloatRect backButton(860, 20, 145, 45);
+
+								if (moreRulesButton.contains(mousePos)) {
+									cout << "1!" << endl;
+									tutorialPage = 1;
+									tutorialSprite.setTexture(textures[tutorialPage]);
+								}
+								if (moveSetsButton.contains(mousePos)) {
+									cout << "2" << endl;
+									tutorialPage = 2;
+									tutorialSprite.setTexture(textures[tutorialPage]);
+								}
+								if (moveSets2Button.contains(mousePos)) {
+									cout << "3!" << endl;
+									tutorialPage = 3;
+									tutorialSprite.setTexture(textures[tutorialPage]);
+								}
+
+								if (backButton.contains(mousePos)) {
+									cout << "Back button clicked!" << endl;
+
+									if (tutorialPage == 3) {
+										tutorialPage = 2;  // Go from Page 3 to Page 2
+									}
+									else if (tutorialPage == 2) {
+										tutorialPage = 0;  // Go from Page 2 to Page 0
+									}
+									else if (tutorialPage == 1) {
+										tutorialPage = 0;  // Go from Page 1 to Page 0
+									}
+
+									tutorialSprite.setTexture(textures[tutorialPage]);
+								}
+
+
+							
+
+							// Separate event handling for keyboard input
+							if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+								cout << "Exiting tutorial." << endl;
+								TutorialScreen = false;
+							}
+						}
+
+
+					
 					else if (menu.isExitClicked(mousePos)) {
 						cout << "Exit button clicked! Closing game." << endl;
 						window.close();
@@ -328,9 +381,7 @@ int main()
 		menu.draw(window);
 	}
 	if (TutorialScreen == true) {
-		window.clear();
-
-		
+		window.draw(tutorialSprite);
 	}
 	else if(Gamestatus){
 		window.draw(backgroud);

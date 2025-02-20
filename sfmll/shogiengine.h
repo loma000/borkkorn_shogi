@@ -121,7 +121,9 @@ void shogiengine::resetgame() {
 		ispromoted[i] = 0;
 		turn = 1;
 		amdead[i] = 0;
+		alreadydead[i] = 0;
 	}
+	for (int i = 0;i < 14;i++) { deathcount[i] = 0; }
 
 
 
