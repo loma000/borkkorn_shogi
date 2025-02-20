@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include"shogiengine.h"
+ 
 using namespace std;
 using namespace sf;
 #pragma once
@@ -20,5 +20,8 @@ public:
 	string tt2 = "asset/2.png";
 	string tt3 = "asset/3.png";
 	string tt4 = "asset/4.png";
+	string yestexe = "asset/yes.png";
+	string notexe = "asset/no.png";
+	string gambletex = "asset/gamble.png";
 
 };
