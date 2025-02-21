@@ -30,14 +30,18 @@ public:
 
 
 
-	
+	vector<pair<string, string>>markforreset = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
+	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
+		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}
+	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
 	vector<pair<string, string>>mark = { {"lance","black" },{"knight","black" },{"silver","black" },{"gold","black" },{"king","black" },{"gold","black" },{"silver","black" },{"knight","black" },{"lance","black" },{"rook","black" }
 	,{ "bishop","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },{"pawn","black" },
 		{"lance","white"},{"knight","white"},{"silver","white"},{"gold","white"},{"king","white"},{"gold","white"},{"silver","white"},{"knight","white"},{"lance","white"},{"rook","white"}
 	,{"bishop","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"},{"pawn","white"} };
 	vector<int> pawnid = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8
 	};
-
+	vector<int> pawnidforrset = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8
+	};
 
 	vector<int> capturepawnid = {  -2,-3,-4,-5,-7,-8,-9, 2,3,4,5,7,8,9 };
 	vector<pair<string, string>> deathmark = { {"rook","white"},{"gold","white"},{"silver","white"} ,{ "knight","white" },{"bishop","white"} ,{ "pawn","white" },{"lance","white"} 
@@ -217,11 +221,22 @@ void shogiengine::resetgame() {
 		turn = 1;
 		amdead[i] = 0;
 		alreadydead[i] = 0;
+		mark[i] = markforreset[i];
+		pawnid[i] = pawnidforrset[i];
+		
 	}
 	for (int i = 0;i < 14;i++) { deathcount[i] = 0; }
 
 	promotecheck = false;
-
+	for (int i = 0; i < 81; i++)
+	{
+		showmvt[i] = 0;
+		showatk[i] = 0;
+	}
+	turn = 1;
+	normalsprite = false;
+	 deathsprite = false;
+loadsprite();
 }
 
 bool shogiengine::isPathBlocked(int x, int y, int id) {
