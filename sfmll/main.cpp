@@ -403,7 +403,7 @@ int main()
 							}
 						}
 					}
-					if (shogi.gamble.getGlobalBounds().contains(mousePos) && shogi.gambleon) {
+					if (shogi.gamble.getGlobalBounds().contains(mousePos) && shogi.gambleon && gamemode == 1) {
 						shogi.turn++;
 						shogi.gamblechange(current);
 						shogi.gambleon = false;
