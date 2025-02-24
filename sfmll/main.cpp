@@ -538,8 +538,9 @@ int main()
 
 			}
 			if (shogi.showmove)
-			{
-				shogi.f[current].setColor(Color::Yellow);
+			{if(shogi.normalsprite)shogi.f[current].setColor(Color::Yellow);
+
+				
 
 
 				for (int i = 0; i < 9; i++)
