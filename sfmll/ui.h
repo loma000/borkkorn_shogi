@@ -4,7 +4,8 @@
 #include"shogiengine.h"
 #include"kaipushpongtai.h"
 using namespace std;
-#define Max_Items 3
+#define Menu_Items 3
+#define Mode_Items 4
 using namespace sf;
 #pragma once
 
@@ -12,15 +13,21 @@ class ui
 {
 private:
 	Font font;
-	Text menu[Max_Items];
+	Text menu[Menu_Items];
+	Text mode[Mode_Items];
 public:
 	 
 
-	ui(float width, float hiehgt);
+	ui(float width, float height);
+	
 
-	void draw(RenderWindow& window);
+	void draw(RenderWindow& window, bool showMode);
 	bool isPlayClicked(Vector2f mousePos);
+	bool isNormalclicked(Vector2f mousePos);
+	bool isGambleClicked(Vector2f mousePos);
+	bool isgamemode3clicked(Vector2f mousePos);
 	bool isTutorialClicked(Vector2f mousePos);
 	bool isExitClicked(Vector2f mousePos);
+	bool isBackClicked(Vector2f mousePos);
 };
 

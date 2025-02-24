@@ -1,3 +1,4 @@
+
 #include"shogiengine.h"
 #include"ui.h"
 #include"kaipushpongtai.h"
@@ -16,27 +17,60 @@ ui::ui(float width, float height)
 	menu[0].setFillColor(Color::Red);
 	menu[0].setString("Play");
 	menu[0].setOrigin(menu[0].getLocalBounds().width / 2, menu[0].getLocalBounds().height / 2);
-	menu[0].setPosition(Vector2f(width / 2, height / (Max_Items + 1) * 1));
+	menu[0].setPosition(Vector2f(width / 2, height / (Menu_Items + 1) * 1));
 
 	menu[1].setFont(font);
 	menu[1].setFillColor(Color::White);
 	menu[1].setString("Tutorial");
 	menu[1].setOrigin(menu[1].getLocalBounds().width / 2, menu[1].getLocalBounds().height / 2);
-	menu[1].setPosition(Vector2f(width / 2, height / (Max_Items + 1) * 2));
+	menu[1].setPosition(Vector2f(width / 2, height / (Menu_Items + 1) * 2));
 
 	menu[2].setFont(font);
 	menu[2].setFillColor(Color::White);
 	menu[2].setString("Exit");
 	menu[2].setOrigin(menu[2].getLocalBounds().width / 2, menu[2].getLocalBounds().height / 2);
-	menu[2].setPosition(Vector2f(width / 2, height / (Max_Items + 1) * 3));
+	menu[2].setPosition(Vector2f(width / 2, height / (Menu_Items + 1) * 3));
+
+	mode[0].setFont(font);
+	mode[0].setFillColor(Color::Red);
+	mode[0].setString("Normal Mode");
+	mode[0].setOrigin(mode[0].getGlobalBounds().width / 2, mode[0].getGlobalBounds().height / 2);
+	mode[0].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 1));
+
+	mode[1].setFont(font);
+	mode[1].setFillColor(Color::White);
+	mode[1].setString("Gamble Mode");
+	mode[1].setOrigin(mode[1].getGlobalBounds().width / 2, mode[1].getGlobalBounds().height / 2);
+	mode[1].setPosition(Vector2f(width / 2, height / (Mode_Items +1) * 2));
+
+	mode[2].setFont(font);
+	mode[2].setFillColor(Color::White);
+	mode[2].setString("3");
+	mode[2].setOrigin(mode[2].getGlobalBounds().width / 2, mode[2].getGlobalBounds().height / 2);
+	mode[2].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 3));
+
+	mode[3].setFont(font);
+	mode[3].setFillColor(Color::White);
+	mode[3].setString("Back");
+	mode[3].setOrigin(mode[3].getGlobalBounds().width / 2, mode[3].getGlobalBounds().height / 2);
+	mode[3].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 4));
 }
 
-void ui::draw(RenderWindow& window)
-{
-	for (int i = 0;i < Max_Items;i++) {
-		window.draw(menu[i]);
+
+void ui::draw(RenderWindow& window, bool isMode) {
+	if (isMode) {
+		for (int i = 0; i < Mode_Items; i++) {
+			window.draw(mode[i]);
+		}
+	}
+	else {
+		for (int i = 0; i < Menu_Items; i++) {
+			window.draw(menu[i]);
+		}
 	}
 }
+
+
 
 bool ui::isPlayClicked(Vector2f mousePos) {
 	return menu[0].getGlobalBounds().contains(mousePos);
@@ -53,6 +87,29 @@ bool ui::isExitClicked(Vector2f mousePos)
 	return menu[2].getGlobalBounds().contains(mousePos);
 }
 
+bool ui::isNormalclicked(Vector2f mousePos)
+{
+	return mode[0].getGlobalBounds().contains(mousePos);
+}
+
+bool ui::isGambleClicked(Vector2f mousePos)
+{
+	return mode[1].getGlobalBounds().contains(mousePos);
+}
+
+bool ui::isgamemode3clicked(Vector2f mousePos)
+{
+	return mode[2].getGlobalBounds().contains(mousePos);
+}
+
+bool ui::isBackClicked(Vector2f mousePos)
+{
+	return mode[3].getGlobalBounds().contains(mousePos);
+}
+
+
+
+
 
 
 int main()
@@ -60,14 +117,14 @@ int main()
 	srand(time(0));
 	path path;
 	shogiengine shogi;
-	int count=0;
-	Texture back ;
+	int count = 0;
+	Texture back;
 	back.loadFromFile(path.backgroud);
 	Sprite backgroud(back);
 	Texture moveabletile;
 	Texture attacktile;
-	int current=0;
-	RenderWindow window( VideoMode(1000, 500), "maibork");
+	int current = 0;
+	RenderWindow window(VideoMode(1000, 500), "maibork");
 	Texture item;
 	Texture board;
 	shogi.loadtextureyesno(path);
@@ -85,6 +142,10 @@ int main()
 	textures[2].loadFromFile(path.tt3);
 	textures[3].loadFromFile(path.tt4);
 
+	//gamemode
+	bool gamemodescreen = false;
+	int gamemode = 0;
+
 
 	Sprite tutorialSprite;
 	int tutorialPage = 0;
@@ -98,7 +159,7 @@ int main()
 		shogi.f[i].setTexture(item);
 
 	}
-	for (int i = 0; i <16; i++)
+	for (int i = 0; i < 16; i++)
 	{
 		shogi.capturedSprites2[i].setTexture(item);
 
@@ -114,6 +175,7 @@ int main()
 	shogi.loadtile();
 	window.setFramerateLimit(100);
 	ui menu(window.getSize().x, window.getSize().y);
+	ui mode(window.getSize().x, window.getSize().y);
 	while (window.isOpen())
 	{
 
@@ -134,72 +196,99 @@ int main()
 				if (!Gamestatus) { // Menu screen
 					if (menu.isPlayClicked(mousePos)) {
 						cout << " Play button clicked! Switching to game mode." << endl;
-						Gamestatus = true;
+						gamemodescreen = true;
+						cout << "gamemode selection";
 					}
 					else if (menu.isTutorialClicked(mousePos)) {
 						cout << " Clicked tutorial" << endl;
 						TutorialScreen = true;
 					}
-						if (TutorialScreen) {
-							if (tutorialPage == 0) {
-								FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
-								FloatRect moveSetsButton(580, 380, 145, 45);
-								if (moreRulesButton.contains(mousePos)) {
-									cout << "1!" << endl;
-									tutorialPage = 1;
-									tutorialSprite.setTexture(textures[tutorialPage]);
-								}
-								if (moveSetsButton.contains(mousePos)) {
-									cout << "2" << endl;
-									tutorialPage = 2;
-									tutorialSprite.setTexture(textures[tutorialPage]);
-								}
+					if (TutorialScreen) {
+						if (tutorialPage == 0) {
+							FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
+							FloatRect moveSetsButton(580, 380, 145, 45);
+							if (moreRulesButton.contains(mousePos)) {
+								cout << "1!" << endl;
+								tutorialPage = 1;
+								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
-							else if (tutorialPage == 2) {
-								FloatRect moveSets2Button(860, 400, 145, 45);
-								if (moveSets2Button.contains(mousePos)) {
-									cout << "3!" << endl;
-									tutorialPage = 3;
-									tutorialSprite.setTexture(textures[tutorialPage]);
-								}
+							if (moveSetsButton.contains(mousePos)) {
+								cout << "2" << endl;
+								tutorialPage = 2;
+								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
-							FloatRect backButton(860, 20, 145, 45);
-
-								
-
-								if (backButton.contains(mousePos)) {
-									cout << "Back button clicked!" << endl;
-
-									if (tutorialPage == 3) {
-										tutorialPage = 2;  // Go from Page 3 to Page 2
-									}
-									else if (tutorialPage == 2 || tutorialPage == 1) {
-										tutorialPage = 0;  // Go from Page 2 to Page 0
-									}
-									else if (tutorialPage == 0) {
-										TutorialScreen = false;
-										
-									}
-
-									tutorialSprite.setTexture(textures[tutorialPage]);
-								}
+						}
+						else if (tutorialPage == 2) {
+							FloatRect moveSets2Button(860, 400, 145, 45);
+							if (moveSets2Button.contains(mousePos)) {
+								cout << "3!" << endl;
+								tutorialPage = 3;
+								tutorialSprite.setTexture(textures[tutorialPage]);
+							}
+						}
+						FloatRect backButton(860, 20, 145, 45);
 
 
-							
 
-							// Separate event handling for keyboard input
-							if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-								cout << "Exiting tutorial." << endl;
+						if (backButton.contains(mousePos)) {
+							cout << "Back button clicked!" << endl;
+
+							if (tutorialPage == 3) {
+								tutorialPage = 2;  // Go from Page 3 to Page 2
+							}
+							else if (tutorialPage == 2 || tutorialPage == 1) {
+								tutorialPage = 0;  // Go from Page 2 to Page 0
+							}
+							else if (tutorialPage == 0) {
 								TutorialScreen = false;
+
 							}
+
+							tutorialSprite.setTexture(textures[tutorialPage]);
 						}
 
 
-					
+
+
+						// Separate event handling for keyboard input
+						if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+							cout << "Exiting tutorial." << endl;
+							TutorialScreen = false;
+						}
+					}
+
+
+
 					else if (menu.isExitClicked(mousePos)) {
 						cout << "Exit button clicked! Closing game." << endl;
 						window.close();
 					}
+
+					if (gamemodescreen) {
+						if (mode.isNormalclicked(mousePos)) {
+							cout << "Normal Clicked";
+							gamemode = 0;
+							Gamestatus = true;
+							gamemodescreen = false;
+						}
+						else if (mode.isGambleClicked(mousePos)) {
+							cout << "Gamble Clicked";
+							gamemode = 1;
+							cout << "gamble mode onnnn";
+							Gamestatus = true;
+							gamemodescreen = false;
+						}
+						else if (mode.isgamemode3clicked(mousePos)) {
+							cout << "gamemode 3 Clicked";
+							Gamestatus = true;
+							gamemodescreen = false;
+						}
+						else if (mode.isBackClicked(mousePos)) {
+							cout << "Back Clicked";
+							gamemodescreen = false;
+						}
+					}
+
 				}
 				else if (Gamestatus == true) {
 					if (!spriteMoved && shogi.showmove)
@@ -234,7 +323,7 @@ int main()
 								shogi.startlocation[current].first = x;
 								shogi.startlocation[current].second = y;
 
-								 
+
 								//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 								shogi.promoted(current);
 								cout << current << " " << shogi.ispromoted[current] << endl;
@@ -290,7 +379,7 @@ int main()
 								shogi.startlocation[current].second = (position.y - shogi.bordery) / shogi.size;
 								if (shogi.normalsprite)
 								{
-									 
+
 									shogi.promoted(current);
 								}
 								else
@@ -300,7 +389,7 @@ int main()
 								}
 
 
-								
+
 								cout << current << " " << shogi.ispromoted[current] << endl;
 								shogi.showmvt[k] = 0;
 								shogi.deathsprite = false;
@@ -330,7 +419,7 @@ int main()
 							shogi.showatk[i] = 0;
 						}
 
-						 
+
 
 
 					}
@@ -339,7 +428,7 @@ int main()
 					{
 
 
-						if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white")&&!shogi.promotecheck) {
+						if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && !shogi.promotecheck) {
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
@@ -355,7 +444,7 @@ int main()
 
 
 
-						if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black")&& shogi.showdeadmark[i] == 1&&!shogi.promotecheck) {
+						if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black") && shogi.showdeadmark[i] == 1 && !shogi.promotecheck) {
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
@@ -365,17 +454,17 @@ int main()
 							break;
 						}
 					}
-					if (  shogi.yes.getGlobalBounds().contains(mousePos)&&shogi.promotecheck  ) {
-						 
+					if (shogi.yes.getGlobalBounds().contains(mousePos) && shogi.promotecheck) {
+
 						shogi.move = true;
 						shogi.ispromoted[current] = 1;
 						shogi.promotecheck = false;
-						 }
+					}
 					if (shogi.no.getGlobalBounds().contains(mousePos) && shogi.promotecheck) {
 
-							 shogi.move = true;
-							 shogi.promotecheck = false;
-						 }
+						shogi.move = true;
+						shogi.promotecheck = false;
+					}
 
 				}
 
@@ -384,7 +473,7 @@ int main()
 
 			}
 		}
- 
+
 
 
 
@@ -396,103 +485,113 @@ int main()
 
 
 		//draw
-    window.clear();
-	if (!Gamestatus ) {
-		menu.draw(window);
-	}
-	if (TutorialScreen == true) {
-		window.draw(tutorialSprite);
-	}
-	else if(Gamestatus){
-		 window.draw(backgroud);
-window.draw(b);
-for (int i = 0; i < 40; i++)
-	{
-	
-	
-	
-	if(shogi.dead[i]==0)
-		window.draw(shogi.f[i]);
-
-
-
-	if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && shogi.ispromoted[i] == 1)
-	{
-		shogi.f[i].setColor( Color::Magenta);
-
-		
-
-	}
-	else if(shogi.ispromoted[i] == 1)
-	{
-		shogi.f[i].setColor( Color::Red);
-		
-
-	}
-	else if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white"))
-	{
-		shogi.f[i].setColor( Color::Color(193,255,146,200));
-	}
-	else
-	{
-		shogi.f[i].setColor( Color::White);
-	}
-	 
-
-	
-
-
-	}
-if (shogi.showmove)
-{shogi.f[current].setColor(Color::Yellow);
-
-
-	for (int i = 0; i < 9; i++)
-	{
-		for (int j = 0; j < 9; j++)
-		{
-			if (shogi.enermycheck(j, i, current) == "null" && ((shogi.walkcheck(j, i, current) && shogi.normalsprite) ||  shogi.dropCheck(j, i, current) && shogi.deathsprite) && (!shogi.isPathBlocked(j, i, current)|| shogi.deathsprite)) {
-				shogi.showmvt[i * 9 + j] = 1;
-				window.draw(shogi.mvt[i * 9 + j]);
+		window.clear();
+		if (!Gamestatus) {
+			if (gamemodescreen) {
+				mode.draw(window, true);
 			}
-			else if (shogi.enermycheck(j, i, current) == "ally" && shogi.walkcheck(j, i, current))
+			else {
+				menu.draw(window, false);
+			}
+		}
+		if (TutorialScreen == true) {
+			window.draw(tutorialSprite);
+		}
+		else if (Gamestatus) {
+			window.draw(backgroud);
+			window.draw(b);
+			for (int i = 0; i < 40; i++)
 			{
 
-			}
-			else if (shogi.normalsprite&&shogi.enermycheck(j, i, current) == "enemy" && shogi.walkcheck(j, i, current) && !shogi.isPathBlocked(j, i, current))
-			{
-				shogi.showatk[i * 9 + j] = 1;
-				window.draw(shogi.atk[i * 9 + j]);
-			}
 
+
+				if (shogi.dead[i] == 0)
+					window.draw(shogi.f[i]);
+
+
+
+				if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && shogi.ispromoted[i] == 1)
+				{
+					shogi.f[i].setColor(Color::Magenta);
+
+
+
+				}
+				else if (shogi.ispromoted[i] == 1)
+				{
+					shogi.f[i].setColor(Color::Red);
+
+
+				}
+				else if ((shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white"))
+				{
+					shogi.f[i].setColor(Color::Color(193, 255, 146, 200));
+				}
+				else
+				{
+					shogi.f[i].setColor(Color::White);
+				}
+
+
+
+
+
+			}
+			if (shogi.showmove)
+			{
+				shogi.f[current].setColor(Color::Yellow);
+
+
+				for (int i = 0; i < 9; i++)
+				{
+					for (int j = 0; j < 9; j++)
+					{
+						if (shogi.enermycheck(j, i, current) == "null" && ((shogi.walkcheck(j, i, current) && shogi.normalsprite) || shogi.dropCheck(j, i, current) && shogi.deathsprite) && (!shogi.isPathBlocked(j, i, current) || shogi.deathsprite)) {
+							shogi.showmvt[i * 9 + j] = 1;
+							window.draw(shogi.mvt[i * 9 + j]);
+						}
+						else if (shogi.enermycheck(j, i, current) == "ally" && shogi.walkcheck(j, i, current))
+						{
+
+						}
+						else if (shogi.normalsprite && shogi.enermycheck(j, i, current) == "enemy" && shogi.walkcheck(j, i, current) && !shogi.isPathBlocked(j, i, current))
+						{
+							shogi.showatk[i * 9 + j] = 1;
+							window.draw(shogi.atk[i * 9 + j]);
+						}
+
+
+					}
+
+				}
+			}
 
 		}
+		shogi.drawpromotecheck(window);
+		if (!shogi.move)
+		{
+			shogi.diecount();
 
-	}
-}
-	
-	}
-	shogi.drawpromotecheck(window);
-	if (!shogi.move)
-	{
-shogi.diecount();
-	
-	}
-	shogi.drawCapturedPieces(window);
-	if (shogi.gambleon)
-	{
-window.draw(shogi.gamble);
-	}
-	
-	//cout << current<<showmove;
-
+		}
+		shogi.drawCapturedPieces(window);
+		if (gamemode == 1) {
+			if (shogi.gambleon)
+			{
+				window.draw(shogi.gamble);
+			}
+		}
 		
-	window.display(); 
+		
+
+		//cout << current<<showmove;
+
+
+		window.display();
 
 
 	}
 
 
-	
+
 	return 0;
 }
