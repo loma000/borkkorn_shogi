@@ -3,6 +3,11 @@
 #include"ui.h"
 #include"kaipushpongtai.h"
 #include<iostream>
+#include<windows.h>
+#include<mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+#include <thread>
+#include <atomic>
 
 
 
@@ -107,7 +112,18 @@ bool ui::isBackClicked(Vector2f mousePos)
 	return mode[3].getGlobalBounds().contains(mousePos);
 }
 
+atomic<bool> keepPlaying(true);
 
+void loopSound() {
+	mciSendString(TEXT("open \"asset/button1.wav\" type waveaudio alias bgm"), NULL, 0, NULL);
+
+	while (keepPlaying) {
+		mciSendString(TEXT("play bgm from 0"), NULL, 0, NULL);
+		Sleep(3000); // Adjust based on file length
+	}
+
+	mciSendString(TEXT("close bgm"), NULL, 0, NULL);
+}
 
 
 
@@ -176,6 +192,8 @@ int main()
 	window.setFramerateLimit(100);
 	ui menu(window.getSize().x, window.getSize().y);
 	ui mode(window.getSize().x, window.getSize().y);
+	//thread bgmThread(loopSound); //play background music
+	//bgmThread.detach();
 	while (window.isOpen())
 	{
 
@@ -197,10 +215,12 @@ int main()
 					if (menu.isPlayClicked(mousePos)) {
 						cout << " Play button clicked! Switching to game mode." << endl;
 						gamemodescreen = true;
+						PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						cout << "gamemode selection";
 					}
 					else if (menu.isTutorialClicked(mousePos)) {
 						cout << " Clicked tutorial" << endl;
+						PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						TutorialScreen = true;
 					}
 					if (TutorialScreen) {
@@ -210,11 +230,13 @@ int main()
 							FloatRect GambleRuleButton(635, 380, 145, 45);
 							if (moreRulesButton.contains(mousePos)) {
 								cout << "1!" << endl;
+								PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								tutorialPage = 1;
 								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
 							if (moveSetsButton.contains(mousePos)) {
 								cout << "2" << endl;
+								PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								tutorialPage = 2;
 								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
@@ -226,6 +248,7 @@ int main()
 							FloatRect moveSets2Button(860, 400, 145, 45);
 							if (moveSets2Button.contains(mousePos)) {
 								cout << "3!" << endl;
+								PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								tutorialPage = 3;
 								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
@@ -236,7 +259,7 @@ int main()
 
 						if (backButton.contains(mousePos)) {
 							cout << "Back button clicked!" << endl;
-
+							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							if (tutorialPage == 3) {
 								tutorialPage = 2;  // Go from Page 3 to Page 2
 							}
@@ -264,18 +287,21 @@ int main()
 
 
 					else if (menu.isExitClicked(mousePos)) {
+						PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						cout << "Exit button clicked! Closing game." << endl;
 						window.close();
 					}
 
 					if (gamemodescreen) {
 						if (mode.isNormalclicked(mousePos)) {
+							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							cout << "Normal Clicked";
 							gamemode = 0;
 							Gamestatus = true;
 							gamemodescreen = false;
 						}
 						else if (mode.isGambleClicked(mousePos)) {
+							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							cout << "Gamble Clicked";
 							gamemode = 1;
 							cout << "gamble mode onnnn";
@@ -283,11 +309,13 @@ int main()
 							gamemodescreen = false;
 						}
 						else if (mode.isgamemode3clicked(mousePos)) {
+							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							cout << "gamemode 3 Clicked";
 							Gamestatus = true;
 							gamemodescreen = false;
 						}
 						else if (mode.isBackClicked(mousePos)) {
+							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							cout << "Back Clicked";
 							gamemodescreen = false;
 						}
@@ -333,6 +361,7 @@ int main()
 								cout << current << " " << shogi.ispromoted[current] << endl;
 								shogi.showatk[j] = 0;
 								cout << "isclickatk";
+								PlaySound(TEXT("asset/capture.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								shogi.turn++;
 								spriteMoved = true;
 
@@ -400,6 +429,7 @@ int main()
 
 								shogi.normalsprite = false;
 								cout << "isclickmvt";
+								PlaySound(TEXT("asset/move.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								shogi.turn++;
 								spriteMoved = true;
 								break;
@@ -407,8 +437,9 @@ int main()
 							}
 						}
 					}
-					if (shogi.gamble.getGlobalBounds().contains(mousePos) && shogi.gambleon) {
+					if (shogi.gamble.getGlobalBounds().contains(mousePos) && shogi.gambleon && gamemode == 1) {
 						shogi.turn++;
+						PlaySound(TEXT("asset/button1.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						shogi.gamblechange(current);
 						shogi.gambleon = false;
 					}
@@ -542,8 +573,9 @@ int main()
 
 			}
 			if (shogi.showmove)
-			{
-				shogi.f[current].setColor(Color::Yellow);
+			{if(shogi.normalsprite)shogi.f[current].setColor(Color::Yellow);
+
+				
 
 
 				for (int i = 0; i < 9; i++)
