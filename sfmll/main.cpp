@@ -205,8 +205,9 @@ int main()
 					}
 					if (TutorialScreen) {
 						if (tutorialPage == 0) {
-							FloatRect moreRulesButton(280, 380, 145, 45); // (x, y, width, height)
-							FloatRect moveSetsButton(580, 380, 145, 45);
+							FloatRect moreRulesButton(225, 380, 145, 45); // (x, y, width, height)
+							FloatRect moveSetsButton(430, 380, 145, 45);
+							FloatRect GambleRuleButton(635, 380, 145, 45);
 							if (moreRulesButton.contains(mousePos)) {
 								cout << "1!" << endl;
 								tutorialPage = 1;
@@ -216,6 +217,9 @@ int main()
 								cout << "2" << endl;
 								tutorialPage = 2;
 								tutorialSprite.setTexture(textures[tutorialPage]);
+							}
+							if (GambleRuleButton.contains(mousePos)) {
+								cout << "Gamble rule clicked";
 							}
 						}
 						else if (tutorialPage == 2) {
