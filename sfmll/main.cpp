@@ -152,11 +152,13 @@ int main()
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
 	//mainmenu
-	vector<sf::Texture> textures(4);
+	vector<sf::Texture> textures(5);
 	textures[0].loadFromFile(path.tt1);
 	textures[1].loadFromFile(path.tt2);
 	textures[2].loadFromFile(path.tt3);
 	textures[3].loadFromFile(path.tt4);
+	textures[4].loadFromFile(path.tt5);
+
 
 	//gamemode
 	bool gamemodescreen = false;
@@ -242,6 +244,9 @@ int main()
 							}
 							if (GambleRuleButton.contains(mousePos)) {
 								cout << "Gamble rule clicked";
+								PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
+								tutorialPage = 4;
+								tutorialSprite.setTexture(textures[tutorialPage]);
 							}
 						}
 						else if (tutorialPage == 2) {
@@ -263,7 +268,7 @@ int main()
 							if (tutorialPage == 3) {
 								tutorialPage = 2;  // Go from Page 3 to Page 2
 							}
-							else if (tutorialPage == 2 || tutorialPage == 1) {
+							else if (tutorialPage == 2 || tutorialPage == 1 || tutorialPage ==4) {
 								tutorialPage = 0;  // Go from Page 2 to Page 0
 							}
 							else if (tutorialPage == 0) {

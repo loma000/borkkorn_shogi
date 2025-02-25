@@ -20,6 +20,7 @@ public:
 	string tt2 = "asset/2.png";
 	string tt3 = "asset/3.png";
 	string tt4 = "asset/4.png";
+	string tt5 = "asset/5.png";
 	string yestexe = "asset/yes.png";
 	string notexe = "asset/no.png";
 	string gambletex = "asset/repiece.png";
