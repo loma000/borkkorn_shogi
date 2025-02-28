@@ -46,7 +46,7 @@ ui::ui(float width, float height)
 	mode[1].setFillColor(Color::White);
 	mode[1].setString("Gamble Mode");
 	mode[1].setOrigin(mode[1].getGlobalBounds().width / 2, mode[1].getGlobalBounds().height / 2);
-	mode[1].setPosition(Vector2f(width / 2, height / (Mode_Items +1) * 2));
+	mode[1].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 2));
 
 	mode[2].setFont(font);
 	mode[2].setFillColor(Color::White);
@@ -159,6 +159,10 @@ int main()
 	textures[3].loadFromFile(path.tt4);
 	textures[4].loadFromFile(path.tt5);
 
+	//esc
+	bool escnow = false;
+	RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
+	overlay.setFillColor(Color(0, 0, 0, 128));
 
 	//gamemode
 	bool gamemodescreen = false;
@@ -207,7 +211,11 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::R)) {
 				shogi.resetgame();
 			}
-
+			if (Gamestatus == true) {
+				if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+					escnow = true;
+				}
+			}
 
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
@@ -268,7 +276,7 @@ int main()
 							if (tutorialPage == 3) {
 								tutorialPage = 2;  // Go from Page 3 to Page 2
 							}
-							else if (tutorialPage == 2 || tutorialPage == 1 || tutorialPage ==4) {
+							else if (tutorialPage == 2 || tutorialPage == 1 || tutorialPage == 4) {
 								tutorialPage = 0;  // Go from Page 2 to Page 0
 							}
 							else if (tutorialPage == 0) {
@@ -283,10 +291,10 @@ int main()
 
 
 						// Separate event handling for keyboard input
-						if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+						/*if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
 							cout << "Exiting tutorial." << endl;
 							TutorialScreen = false;
-						}
+						}*/
 					}
 
 
@@ -328,26 +336,49 @@ int main()
 
 				}
 				else if (Gamestatus == true) {
-					if (!spriteMoved && shogi.showmove)
-					{
+					if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+						escnow = true;
+					}
+					if (shogi.esc.getGlobalBounds().contains(mousePos)) {
+						escnow = true;
+					}
+					
+					if (shogi.conti.getGlobalBounds().contains(mousePos) && escnow == true) {
+						escnow = false;
+					}
+					if (shogi.restart.getGlobalBounds().contains(mousePos) && escnow == true) {
+						escnow = false;
+						shogi.resetgame();
+
+					}
+					if (shogi.back.getGlobalBounds().contains(mousePos) && escnow == true) {
+						escnow = false;
+						Gamestatus = false;
+						shogi.resetgame();
+					}
+					if (escnow == false){
 
 
-						for (int j = 0; j < 81; j++)
+						if (!spriteMoved && shogi.showmove)
 						{
 
-							if (shogi.atk[j].getGlobalBounds().contains(mousePos) && shogi.showatk[j] == 1) {
-								Vector2f position = shogi.atk[j].getPosition();
-								int x = int((position.x - shogi.borderx) / shogi.size);
-								int y = int((position.y - shogi.bordery) / shogi.size);
-								for (int i = 0; i < 40; i++)
-								{
-									if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second && shogi.dead[i] == 0) {
-										shogi.amdead[i] = 1;cout << shogi.mark[i].first << " " << i << " dead" << endl;
-										shogi.ispromoted[i] = 0;
 
-										break;
+							for (int j = 0; j < 81; j++)
+							{
+
+								if (shogi.atk[j].getGlobalBounds().contains(mousePos) && shogi.showatk[j] == 1) {
+									Vector2f position = shogi.atk[j].getPosition();
+									int x = int((position.x - shogi.borderx) / shogi.size);
+									int y = int((position.y - shogi.bordery) / shogi.size);
+									for (int i = 0; i < 40; i++)
+									{
+										if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second && shogi.dead[i] == 0) {
+											shogi.amdead[i] = 1;cout << shogi.mark[i].first << " " << i << " dead" << endl;
+											shogi.ispromoted[i] = 0;
+
+											break;
+										}
 									}
-								}
 
 
 
@@ -356,27 +387,27 @@ int main()
 
 
 
-								shogi.normalsprite = false;
-								shogi.startlocation[current].first = x;
-								shogi.startlocation[current].second = y;
+									shogi.normalsprite = false;
+									shogi.startlocation[current].first = x;
+									shogi.startlocation[current].second = y;
 
 
-								//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
-								shogi.promoted(current);
-								cout << current << " " << shogi.ispromoted[current] << endl;
-								shogi.showatk[j] = 0;
-								cout << "isclickatk";
-								PlaySound(TEXT("asset/capture.wav"), NULL, SND_FILENAME | SND_ASYNC);
-								shogi.turn++;
-								spriteMoved = true;
+									//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+									shogi.promoted(current);
+									cout << current << " " << shogi.ispromoted[current] << endl;
+									shogi.showatk[j] = 0;
+									cout << "isclickatk";
+									PlaySound(TEXT("asset/capture.wav"), NULL, SND_FILENAME | SND_ASYNC);
+									shogi.turn++;
+									spriteMoved = true;
 
 
-								break;
-							};
+									break;
+								};
 
 
+							}
 						}
-					}
 					if (!spriteMoved && shogi.showmove)
 					{
 
@@ -521,6 +552,7 @@ int main()
 		{
 			shogi.smoothmove(current);
 		}
+	}
 
 
 
@@ -539,6 +571,7 @@ int main()
 		}
 		else if (Gamestatus) {
 			window.draw(backgroud);
+			window.draw(shogi.esc);
 			window.draw(b);
 			for (int i = 0; i < 40; i++)
 			{
@@ -578,9 +611,10 @@ int main()
 
 			}
 			if (shogi.showmove)
-			{if(shogi.normalsprite)shogi.f[current].setColor(Color::Yellow);
+			{
+				if (shogi.normalsprite)shogi.f[current].setColor(Color::Yellow);
 
-				
+
 
 
 				for (int i = 0; i < 9; i++)
@@ -621,8 +655,13 @@ int main()
 				window.draw(shogi.gamble);
 			}
 		}
-		
-		
+		if (escnow) {
+			window.draw(overlay);
+			window.draw(shogi.restart);
+			window.draw(shogi.conti);
+			window.draw(shogi.back);
+		}
+
 
 		//cout << current<<showmove;
 

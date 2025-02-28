@@ -94,6 +94,14 @@ public:
 	void loadtextureyesno(path     );
 	void drawpromotecheck(RenderWindow&);
 	int gamblechange(int  );
+	Sprite esc;
+	Texture esctex;
+	Sprite restart;
+	Texture restarttex;
+	Sprite conti;
+	Texture contitex;
+	Sprite back;
+	Texture backtex;
 };
 
 int shogiengine::turn = 1;
@@ -173,6 +181,18 @@ void shogiengine::loadtextureyesno(path  p) {
 	yes.setPosition(76 + borderx, 196 + bordery);
 	no.setPosition(270 + borderx, 196 + bordery);
 	gamble.setPosition(465 + borderx, 213 + bordery);
+	esctex.loadFromFile(p.escape);
+	esc.setTexture(esctex);
+	esc.setPosition(875 + borderx, 0 );
+	restarttex.loadFromFile(p.restart);
+	restart.setTexture(restarttex);
+	restart.setPosition(350 + borderx, 50+ bordery);
+	contitex.loadFromFile(p.conti);
+	conti.setTexture(contitex);
+	conti.setPosition(350 + borderx, 150 + bordery);
+	backtex.loadFromFile(p.back);
+	back.setTexture(backtex);
+	back.setPosition(350 + borderx,250 + bordery);
 }
 
 
@@ -434,21 +454,21 @@ string shogiengine::enermycheck(int x, int y, int id) {
 
 }
 void shogiengine::promoted(int id) {
-
-
-	if (mark[id].first != "king" && mark[id].first != "gold" && (startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white")&& ispromoted[id]==0)
+	if ((mark[id].first == "knight" || mark[id].first == "lance") && (startlocation[id].second >= 8 && mark[id].second == "black" || startlocation[id].second <= 0 && mark[id].second == "white") && ispromoted[id] == 0)
 	{
-		promotecheck = true;
-	}
-	else
-	{
+		ispromoted[id] = 1;
 		move = true;
 	}
+	else
 
-	
-
-
-
+		if (mark[id].first != "king" && mark[id].first != "gold" && (startlocation[id].second >= 6 && mark[id].second == "black" || startlocation[id].second <= 2 && mark[id].second == "white") && ispromoted[id] == 0)
+		{
+			promotecheck = true;
+		}
+		else
+		{
+			move = true;
+		}
 }
 
 
@@ -570,6 +590,8 @@ bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
 	// All checks passed: the drop is valid.
 	isdropped[pieceIndex] = 0;
 	return true;
+
+
 }
 
 
