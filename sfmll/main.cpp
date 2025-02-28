@@ -115,11 +115,11 @@ bool ui::isBackClicked(Vector2f mousePos)
 atomic<bool> keepPlaying(true);
 
 void loopSound() {
-	mciSendString(TEXT("open \"asset/button1.wav\" type waveaudio alias bgm"), NULL, 0, NULL);
+	mciSendString(TEXT("open \"asset/bgsound.wav\" type waveaudio alias bgm"), NULL, 0, NULL);
 
 	while (keepPlaying) {
 		mciSendString(TEXT("play bgm from 0"), NULL, 0, NULL);
-		Sleep(3000); // Adjust based on file length
+		Sleep(286000); // Adjust based on file length
 	}
 
 	mciSendString(TEXT("close bgm"), NULL, 0, NULL);
@@ -198,8 +198,8 @@ int main()
 	window.setFramerateLimit(50);
 	ui menu(window.getSize().x, window.getSize().y);
 	ui mode(window.getSize().x, window.getSize().y);
-	//thread bgmThread(loopSound); //play background music
-	//bgmThread.detach();
+	thread bgmThread(loopSound); //play background music
+	bgmThread.detach();
 	while (window.isOpen())
 	{
 
