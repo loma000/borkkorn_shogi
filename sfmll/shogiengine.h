@@ -454,7 +454,7 @@ string shogiengine::enermycheck(int x, int y, int id) {
 
 }
 void shogiengine::promoted(int id) {
-	if ((mark[id].first == "knight" || mark[id].first == "lance") && (startlocation[id].second >= 8 && mark[id].second == "black" || startlocation[id].second <= 0 && mark[id].second == "white") && ispromoted[id] == 0)
+	if ((mark[id].first == "knight" || mark[id].first == "lance" || mark[id].first == "pawn") && (startlocation[id].second >= 8 && mark[id].second == "black" || startlocation[id].second <= 0 && mark[id].second == "white") && ispromoted[id] == 0)
 	{
 		ispromoted[id] = 1;
 		move = true;

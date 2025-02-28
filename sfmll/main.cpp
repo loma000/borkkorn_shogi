@@ -195,7 +195,7 @@ int main()
 	shogi.loadcapturesprite();
 	shogi.loadsprite();
 	shogi.loadtile();
-	window.setFramerateLimit(100);
+	window.setFramerateLimit(50);
 	ui menu(window.getSize().x, window.getSize().y);
 	ui mode(window.getSize().x, window.getSize().y);
 	//thread bgmThread(loopSound); //play background music
@@ -336,9 +336,7 @@ int main()
 
 				}
 				else if (Gamestatus == true) {
-					if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-						escnow = true;
-					}
+					 
 					if (shogi.esc.getGlobalBounds().contains(mousePos)) {
 						escnow = true;
 					}
@@ -548,12 +546,12 @@ int main()
 
 
 
-		if (shogi.move)
+		
+	}
+if (shogi.move)
 		{
 			shogi.smoothmove(current);
 		}
-	}
-
 
 
 		//draw
