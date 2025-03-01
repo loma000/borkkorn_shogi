@@ -19,7 +19,7 @@ ui::ui(float width, float height)
 		///for handle error
 	}
 	menu[0].setFont(font);
-	menu[0].setFillColor(Color::Red);
+	menu[0].setFillColor(Color::White);
 	menu[0].setString("Play");
 	menu[0].setOrigin(menu[0].getLocalBounds().width / 2, menu[0].getLocalBounds().height / 2);
 	menu[0].setPosition(Vector2f(width / 2, height / (Menu_Items + 1) * 1));
@@ -37,7 +37,7 @@ ui::ui(float width, float height)
 	menu[2].setPosition(Vector2f(width / 2, height / (Menu_Items + 1) * 3));
 
 	mode[0].setFont(font);
-	mode[0].setFillColor(Color::Red);
+	mode[0].setFillColor(Color::White);
 	mode[0].setString("Normal Mode");
 	mode[0].setOrigin(mode[0].getGlobalBounds().width / 2, mode[0].getGlobalBounds().height / 2);
 	mode[0].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 1));
@@ -112,19 +112,42 @@ bool ui::isBackClicked(Vector2f mousePos)
 	return mode[3].getGlobalBounds().contains(mousePos);
 }
 
+void ui::updateMenuHover(Vector2f mousePos, bool showmode) {
+	if (!showmode) {
+		for (int i = 0; i < Menu_Items; i++) {
+			if (menu[i].getGlobalBounds().contains(mousePos)) {
+				menu[i].setFillColor(sf::Color::Red); // Change color on hover
+			}
+			else {
+				menu[i].setFillColor(sf::Color::White); // Reset to white when not hovering
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < Mode_Items; i++) {
+			if (mode[i].getGlobalBounds().contains(mousePos)) {
+				mode[i].setFillColor(sf::Color::Red); // Change color on hover
+			}
+			else {
+				mode[i].setFillColor(sf::Color::White); // Reset to white when not hovering
+			}
+		}
+	}
+}
+
+
 atomic<bool> keepPlaying(true);
 
 void loopSound() {
-	mciSendString(TEXT("open \"asset/button1.wav\" type waveaudio alias bgm"), NULL, 0, NULL);
+	mciSendString(TEXT("open \"asset/bgsound.wav\" type waveaudio alias bgm"), NULL, 0, NULL);
 
 	while (keepPlaying) {
 		mciSendString(TEXT("play bgm from 0"), NULL, 0, NULL);
-		Sleep(3000); // Adjust based on file length
+		Sleep(286000); // Adjust based on file length
 	}
 
 	mciSendString(TEXT("close bgm"), NULL, 0, NULL);
 }
-
 
 
 
@@ -152,6 +175,10 @@ int main()
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
 	//mainmenu
+	Texture menu_bg;
+	menu_bg.loadFromFile(path.menu_bg);
+	Sprite menu_bgs;
+	menu_bgs.setTexture(menu_bg);
 	vector<sf::Texture> textures(5);
 	textures[0].loadFromFile(path.tt1);
 	textures[1].loadFromFile(path.tt2);
@@ -195,11 +222,11 @@ int main()
 	shogi.loadcapturesprite();
 	shogi.loadsprite();
 	shogi.loadtile();
-	window.setFramerateLimit(100);
+	window.setFramerateLimit(50);
 	ui menu(window.getSize().x, window.getSize().y);
 	ui mode(window.getSize().x, window.getSize().y);
-	//thread bgmThread(loopSound); //play background music
-	//bgmThread.detach();
+	thread bgmThread(loopSound); //play background music
+	bgmThread.detach();
 	while (window.isOpen())
 	{
 
@@ -216,12 +243,25 @@ int main()
 					escnow = true;
 				}
 			}
+				if (event.type == Event::MouseMoved) {
+					
+					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+					sf::Vector2f mousePosF(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+					
+
+					if (!gamemodescreen) {
+						menu.updateMenuHover(mousePosF,false);  // Update hover effect
+					}
+					else {
+						mode.updateMenuHover(mousePosF, true);
+					}
+				}
+			
 
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
 				sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-
-				if (!Gamestatus) { // Menu screen
+				if (!Gamestatus && !gamemodescreen) { // Menu screen
 					if (menu.isPlayClicked(mousePos)) {
 						cout << " Play button clicked! Switching to game mode." << endl;
 						gamemodescreen = true;
@@ -304,8 +344,9 @@ int main()
 						cout << "Exit button clicked! Closing game." << endl;
 						window.close();
 					}
-
+				}
 					if (gamemodescreen) {
+					
 						if (mode.isNormalclicked(mousePos)) {
 							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							cout << "Normal Clicked";
@@ -334,11 +375,9 @@ int main()
 						}
 					}
 
-				}
+				
 				else if (Gamestatus == true) {
-					if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-						escnow = true;
-					}
+					 
 					if (shogi.esc.getGlobalBounds().contains(mousePos)) {
 						escnow = true;
 					}
@@ -548,21 +587,23 @@ int main()
 
 
 
-		if (shogi.move)
+		
+	}
+if (shogi.move)
 		{
 			shogi.smoothmove(current);
 		}
-	}
-
 
 
 		//draw
 		window.clear();
 		if (!Gamestatus) {
 			if (gamemodescreen) {
+				window.draw(menu_bgs);
 				mode.draw(window, true);
 			}
 			else {
+				window.draw(menu_bgs);
 				menu.draw(window, false);
 			}
 		}

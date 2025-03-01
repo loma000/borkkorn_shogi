@@ -29,5 +29,6 @@ public:
 	bool isTutorialClicked(Vector2f mousePos);
 	bool isExitClicked(Vector2f mousePos);
 	bool isBackClicked(Vector2f mousePos);
+	void updateMenuHover(Vector2f mousePos,bool showmode);
 };
 
