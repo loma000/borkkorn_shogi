@@ -102,6 +102,10 @@ public:
 	Texture contitex;
 	Sprite back;
 	Texture backtex;
+	Sprite blackwin;
+	Texture blackwintex;
+	Sprite whitewin;
+	Texture whitewintex;
 };
 
 int shogiengine::turn = 1;
@@ -193,6 +197,12 @@ void shogiengine::loadtextureyesno(path  p) {
 	backtex.loadFromFile(p.back);
 	back.setTexture(backtex);
 	back.setPosition(350 + borderx,250 + bordery);
+	blackwintex.loadFromFile(p.blackwin);
+	blackwin.setTexture(blackwintex);
+	blackwin.setPosition(300 + borderx, 100 + bordery);
+	whitewintex.loadFromFile(p.whitewin);
+	whitewin.setTexture(whitewintex);
+	whitewin.setPosition(300 + borderx, 100 + bordery);
 }
 
 
