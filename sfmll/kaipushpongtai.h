@@ -30,5 +30,6 @@ public:
 	string back = "asset/back.png";
 	string blackwin = "asset/blackwin.png";
 	string whitewin = "asset/whitewin.png";
+	string menu_bg = "asset/backgroundhd.png";
 
 };
