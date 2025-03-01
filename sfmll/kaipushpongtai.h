@@ -28,5 +28,7 @@ public:
 	string restart = "asset/restart.png";
 	string conti = "asset/continue.png";
 	string back = "asset/back.png";
-	string menu_bg = "asset/backgroundhd.png";
+	string blackwin = "asset/blackwin.png";
+	string whitewin = "asset/whitewin.png";
+
 };

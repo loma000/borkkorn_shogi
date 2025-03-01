@@ -195,6 +195,9 @@ int main()
 	bool gamemodescreen = false;
 	int gamemode = 0;
 
+	//winner
+	bool isblackwin = false;
+	bool iswhitewin = false;
 
 	Sprite tutorialSprite;
 	int tutorialPage = 0;
@@ -235,12 +238,17 @@ int main()
 		{
 			if (event.type == Event::Closed)
 				window.close();
+
 			if (Keyboard::isKeyPressed(Keyboard::R)) {
 				shogi.resetgame();
+				isblackwin = false;
+				iswhitewin = false;
 			}
 			if (Gamestatus == true) {
 				if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 					escnow = true;
+					isblackwin = false;
+					iswhitewin = false;
 				}
 			}
 				if (event.type == Event::MouseMoved) {
@@ -380,6 +388,8 @@ int main()
 					 
 					if (shogi.esc.getGlobalBounds().contains(mousePos)) {
 						escnow = true;
+						isblackwin = false;
+						iswhitewin = false;
 					}
 					
 					if (shogi.conti.getGlobalBounds().contains(mousePos) && escnow == true) {
@@ -589,6 +599,28 @@ int main()
 
 		
 	}
+
+	for (int i = 0;i < 40;i++) {
+		if (shogi.dead[i] == 1 && shogi.mark[i].first == "king") {
+			if (shogi.mark[i].second == "white") {
+				if(escnow){
+					isblackwin = false;
+				}
+				else {
+					isblackwin = true;
+				}
+			}
+			else {
+				if (escnow) {
+					iswhitewin = false;
+				}
+				else {
+					iswhitewin = true;
+				}
+				
+			}
+		}
+	}
 if (shogi.move)
 		{
 			shogi.smoothmove(current);
@@ -703,6 +735,14 @@ if (shogi.move)
 			window.draw(shogi.back);
 		}
 
+		if (isblackwin) {
+			window.draw(overlay);
+			window.draw(shogi.blackwin);
+		}
+		if (iswhitewin) {
+			window.draw(overlay);
+			window.draw(shogi.whitewin);
+		}
 
 		//cout << current<<showmove;
 
