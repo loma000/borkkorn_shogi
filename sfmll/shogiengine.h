@@ -13,6 +13,8 @@ class shogiengine
 public:
 	 
 	bool showmove = false;
+	vector<string> moveHistory; // เพิ่มตัวแปร moveHistory
+	void recordMove(std::string moveString); // เพิ่มฟังก์ชัน recordMove
 	vector<pair<int, int>> startlocation = { {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0}
 											,{1,1},{7,1},{0,2},{1,2},{2,2},{3,2},{4,2},{5,2},{6,2},{7,2},{8,2},
 												  {8,8},{7,8},{6,8},{5,8},{4,8},{3,8},{2,8},{1,8},{0,8}
@@ -603,7 +605,17 @@ bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
 
 
 }
-
-
+//ประวัติการเดิน
+void shogiengine::recordMove(string moveString) {
+	int currentTurn = (turn + 1) / 2; // คำนวณ Turn ปัจจุบัน
+	string playerColor = (turn % 2 != 0) ? "Black" : "White";
+	// ตรวจสอบว่าเป็นการขึ้น Turn ใหม่หรือไม่ (Turn ของดำ)
+	if (turn % 2 == 0) { // Turn ของดำ (เลขคี่) - Turn ใหม่เริ่มต้นที่ Turn ของดำเสมอ
+		cout << "\n======== Turn " << currentTurn << " ========\n"; // พิมพ์หัวข้อ Turn
+	}
+	cout << "   " << playerColor << ": " << moveString << endl;// แสดงผลรายละเอียดการเดินหมาก โดยเยื้องหน้าเล็กน้อย
+	moveHistory.push_back(moveString);
+}
+//ประวัติการเดิน
 
 

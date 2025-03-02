@@ -155,6 +155,7 @@ int main()
 {
 	srand(time(0));
 	path path;
+
 	shogiengine shogi;
 	int count = 0;
 	Texture back;
@@ -174,6 +175,10 @@ int main()
 	board.loadFromFile(path.boards);
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
+	//history and text
+	string movedPieceName;
+	string moveString;
+	string moveStringgam;
 	//mainmenu
 	Texture menu_bg;
 	menu_bg.loadFromFile(path.menu_bg);
@@ -385,7 +390,6 @@ int main()
 
 				
 				else if (Gamestatus == true) {
-					 
 					if (shogi.esc.getGlobalBounds().contains(mousePos)) {
 						escnow = true;
 						isblackwin = false;
@@ -422,34 +426,55 @@ int main()
 									for (int i = 0; i < 40; i++)
 									{
 										if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second && shogi.dead[i] == 0) {
-											shogi.amdead[i] = 1;cout << shogi.mark[i].first << " " << i << " dead" << endl;
+											shogi.amdead[i] = 1;
+											//cout << shogi.mark[i].first << " " << i << " dead" << endl;
 											shogi.ispromoted[i] = 0;
 
 											break;
 										}
 									}
 
-
-
-
-
-
-
-
+									int first = shogi.startlocation[current].first;
+									int second = shogi.startlocation[current].second;
 									shogi.normalsprite = false;
 									shogi.startlocation[current].first = x;
 									shogi.startlocation[current].second = y;
-
-
 									//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
 									shogi.promoted(current);
-									cout << current << " " << shogi.ispromoted[current] << endl;
+									bool isPromotedMove = shogi.ispromoted[current] == 1;
+									//cout << current << " " << shogi.ispromoted[current] << endl;
 									shogi.showatk[j] = 0;
-									cout << "isclickatk";
+									//cout << "isclickatk";
 									PlaySound(TEXT("asset/capture.wav"), NULL, SND_FILENAME | SND_ASYNC);
 									shogi.turn++;
 									spriteMoved = true;
+									// --- เพิ่มส่วนนี้เพื่อบันทึกประวัติ ---
+									string movedPieceName = shogi.mark[current].first;
+									pair<int, int> startLocation = shogi.startlocation[current];
+									pair<int, int> endLocation;
+									Vector2f atkPosition = shogi.atk[j].getPosition(); // ใช้ชื่อตัวแปรใหม่เพื่อความชัดเจน
+									endLocation.first = int((atkPosition.x - shogi.borderx) / shogi.size);
+									endLocation.second = int((atkPosition.y - shogi.bordery) / shogi.size);
+									string capturedPieceName = "";
+									for (int i = 0; i < 40; i++) { // หาชื่อหมากที่ถูกกิน
+										if (endLocation.first == shogi.startlocation[i].first && endLocation.second == shogi.startlocation[i].second && shogi.dead[i] == 0) {
+											capturedPieceName = shogi.mark[i].first;
+											break;
+										}
+									}
 
+									moveString = (shogi.turn % 2 == 0 ? "White" : "Black"); // สลับตาเดินแล้ว
+									if (isPromotedMove) {
+										moveString += " " + movedPieceName + " (Promote) From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
+									}
+									else {
+										moveString += " " + movedPieceName + " From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + std::to_string(x + 1) + "," + std::to_string(y + 1) + ")";
+									}
+									if (!capturedPieceName.empty()) {
+										moveString += " and Slay " + capturedPieceName;
+									}
+									if (!shogi.promotecheck) { shogi.recordMove(moveString); }
+									// --- จบส่วนที่เพิ่ม ---
 
 									break;
 								};
@@ -484,15 +509,15 @@ int main()
 											shogi.alreadydead[i] = 0;
 											shogi.pawnid[i] *= -1;
 
-											cout << shogi.deathcount[current];
+											//cout << shogi.deathcount[current];
 											current = i;
 											shogi.loadsprite();
 											break;
 										}
 									}
 								}
-
-
+								int first = shogi.startlocation[current].first;
+								int second = shogi.startlocation[current].second;
 								shogi.startlocation[current].first = (position.x - shogi.borderx) / shogi.size;
 								shogi.startlocation[current].second = (position.y - shogi.bordery) / shogi.size;
 								if (shogi.normalsprite)
@@ -502,21 +527,42 @@ int main()
 								}
 								else
 								{
-									cout << "sus";
+									//cout << "sus";
 									shogi.f[current].setPosition(shogi.size * shogi.startlocation[current].first + shogi.borderx, shogi.size * shogi.startlocation[current].second + shogi.bordery);
 								}
 
-
-
-								cout << current << " " << shogi.ispromoted[current] << endl;
+								//cout << current << " " << shogi.ispromoted[current] << endl;
 								shogi.showmvt[k] = 0;
-								shogi.deathsprite = false;
-
 								shogi.normalsprite = false;
-								cout << "isclickmvt";
+								//cout << "isclickmvt";
 								PlaySound(TEXT("asset/move.wav"), NULL, SND_FILENAME | SND_ASYNC);
 								shogi.turn++;
 								spriteMoved = true;
+
+								// --- บันทึกประวัติ ---
+								movedPieceName = shogi.mark[current].first;
+								pair<int, int> startLocation = shogi.startlocation[current];
+								pair<int, int> endLocation;
+								Vector2f mvtPosition = shogi.mvt[k].getPosition(); // ใช้ชื่อตัวแปรใหม่เพื่อความชัดเจน
+								endLocation.first = int((mvtPosition.x - shogi.borderx) / shogi.size);
+								endLocation.second = int((mvtPosition.y - shogi.bordery) / shogi.size);
+								bool isPromotedMove = shogi.ispromoted[current] == 1;
+
+								moveString = (shogi.turn % 2 == 0 ? "White" : "Black"); // สลับตาเดินแล้ว
+
+								if (isPromotedMove) {
+									moveString += " " + movedPieceName + " (Promote) From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
+								}
+								else if (shogi.deathsprite == true) {
+									moveString += " " + movedPieceName + " Revive at (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
+								}
+								else {
+									moveString += " " + movedPieceName + " From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
+								}
+								if (!shogi.promotecheck) { shogi.recordMove(moveString); }
+								shogi.deathsprite = false;
+								// --- จบส่วนที่เพิ่ม ---
+
 								break;
 
 							}
@@ -526,6 +572,11 @@ int main()
 						shogi.turn++;
 						PlaySound(TEXT("asset/button1.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						shogi.gamblechange(current);
+						if (shogi.gambleon == true) {
+							moveStringgam = (shogi.turn % 2 == 0 ? "White" : "Black");
+							moveStringgam += " " + movedPieceName + " is gamble and got something";
+							if (!shogi.promotecheck)shogi.recordMove(moveStringgam);
+						}
 						shogi.gambleon = false;
 					}
 					if (shogi.showmove) {
@@ -552,7 +603,7 @@ int main()
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
-							cout << shogi.dead[i] << endl;
+							//cout << shogi.dead[i] << endl;
 							shogi.normalsprite = true;
 
 							break;
@@ -568,7 +619,7 @@ int main()
 							current = i;
 							shogi.showmove = true;
 							spriteMoved = false;
-							cout << current << endl;
+							//cout << current << endl;
 							shogi.deathsprite = true;
 							shogi.gambleon = true;
 							break;
@@ -578,11 +629,15 @@ int main()
 
 						shogi.move = true;
 						shogi.ispromoted[current] = 1;
+						moveString += " and Promote";
+						shogi.recordMove(moveString);
 						shogi.promotecheck = false;
 					}
 					if (shogi.no.getGlobalBounds().contains(mousePos) && shogi.promotecheck) {
 
 						shogi.move = true;
+						moveString += " and no Promote";
+						shogi.recordMove(moveString);
 						shogi.promotecheck = false;
 					}
 
@@ -650,7 +705,7 @@ if (shogi.move)
 			{
 
 
-
+				
 				if (shogi.dead[i] == 0)
 					window.draw(shogi.f[i]);
 
