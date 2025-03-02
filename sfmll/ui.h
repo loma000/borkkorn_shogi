@@ -12,7 +12,7 @@ using namespace sf;
 class ui
 {
 private:
-	Text replay[8];
+	Text replay[12];
 	Font font;
 	Text menu[Menu_Items];
 	Text mode[Mode_Items];
@@ -37,14 +37,14 @@ public:
 void ui::loadtext() {
 
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 12;i++)
 	{
 		replay[i].setFont(font);
 		replay[i].setFillColor(Color::Black);
 
-		replay[i].setCharacterSize(15);
+		replay[i].setCharacterSize(12);
 		replay[i].setString( "");
-		replay[i].setPosition(625, 60 + 47 * i);
+		replay[i].setPosition(625,60 + 30* i);
 	}
 
 
@@ -54,13 +54,13 @@ void ui::loadtext() {
 void ui::deawtext(RenderWindow& window, bool gamemode, vector<string>& history) {
 
 
-	for (int i = 0; i < history.size()       &&  i < 8 ; i++)
+	for (int i = 0; i < history.size()       &&  i < 12; i++)
 	{
 		replay[i].setString(history[i]);
 	}
 
 
-	for (int i = 0; i < 8 && gamemode; i++)
+	for (int i = 0; i < 12&& gamemode; i++)
 	{
 
 
@@ -75,7 +75,7 @@ void ui::deawtext(RenderWindow& window, bool gamemode, vector<string>& history) 
 
 ui::ui(float width, float height)
 {
-	if (!font.loadFromFile("Roboto_Black.ttf")) {
+	if (!font.loadFromFile("Minecraft.ttf")) {
 		///for handle error
 	}
 	menu[0].setFont(font);

@@ -202,10 +202,10 @@ void shogiengine::loadtextureyesno(path  p) {
 	back.setPosition(350 + borderx,250 + bordery);
 	blackwintex.loadFromFile(p.blackwin);
 	blackwin.setTexture(blackwintex);
-	blackwin.setPosition(300 + borderx, 100 + bordery);
+	blackwin.setPosition(300 + borderx, 80 + bordery);
 	whitewintex.loadFromFile(p.whitewin);
 	whitewin.setTexture(whitewintex);
-	whitewin.setPosition(300 + borderx, 100 + bordery);
+	whitewin.setPosition(300 + borderx, 80 + bordery);
 }
 
 

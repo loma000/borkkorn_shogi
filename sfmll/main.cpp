@@ -13,6 +13,9 @@
 
 
 
+ 
+
+ 
 
 atomic<bool> keepPlaying(true);
 
@@ -79,9 +82,20 @@ int main()
 	int gamemode = 0;
 
 	//winner
+
+	Font font;
+	font.loadFromFile("Minecraft.ttf");
+	Text popup;
+	popup.setFont(font);
+	popup.setString("Press R to Restart!");
+	popup.setFillColor(Color::White);
+	popup.setCharacterSize(26);
+	popup.setPosition(400,320);
+
+
 	bool isblackwin = false;
 	bool iswhitewin = false;
-
+	//tutorial
 	Sprite tutorialSprite;
 	int tutorialPage = 0;
 	tutorialSprite.setTexture(textures[tutorialPage]);
@@ -676,10 +690,13 @@ if (shogi.move)
 		if (isblackwin) {
 			window.draw(overlay);
 			window.draw(shogi.blackwin);
+			window.draw(popup);
 		}
 		if (iswhitewin) {
 			window.draw(overlay);
 			window.draw(shogi.whitewin);
+			window.draw(popup);
+
 		}
 
 		//cout << current<<showmove;

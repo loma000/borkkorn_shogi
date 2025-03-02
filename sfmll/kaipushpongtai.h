@@ -15,7 +15,7 @@ public:
 	string atktiletex = "asset/capturesword.png";
 	string movetiletex = "asset/movedot.png";
 	string piece = "asset/pieces.png";
-	string backgroud = "asset/table.png";
+	string backgroud = "asset/tablebox.png";
 	string tt1 = "asset/1.png";
 	string tt2 = "asset/2.png";
 	string tt3 = "asset/3.png";
