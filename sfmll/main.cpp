@@ -233,6 +233,8 @@ int main()
 	window.setFramerateLimit(50);
 	ui menu(window.getSize().x, window.getSize().y);
 	ui mode(window.getSize().x, window.getSize().y);
+
+	mode.loadtext();
 	thread bgmThread(loopSound); //play background music
 	bgmThread.detach();
 	while (window.isOpen())
@@ -245,7 +247,7 @@ int main()
 				window.close();
 
 			if (Keyboard::isKeyPressed(Keyboard::R)) {
-				shogi.resetgame();
+				shogi.resetgame(mode);
 				isblackwin = false;
 				iswhitewin = false;
 			}
@@ -401,13 +403,13 @@ int main()
 					}
 					if (shogi.restart.getGlobalBounds().contains(mousePos) && escnow == true) {
 						escnow = false;
-						shogi.resetgame();
+						shogi.resetgame(mode);
 
 					}
 					if (shogi.back.getGlobalBounds().contains(mousePos) && escnow == true) {
 						escnow = false;
 						Gamestatus = false;
-						shogi.resetgame();
+						shogi.resetgame(mode);
 					}
 					if (escnow == false){
 
@@ -770,6 +772,9 @@ if (shogi.move)
 			}
 
 		}
+
+
+		 mode.deawtext(window, Gamestatus,shogi.moveHistory);
 		shogi.drawpromotecheck(window);
 		if (!shogi.move)
 		{

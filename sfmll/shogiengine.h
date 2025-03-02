@@ -4,6 +4,7 @@
 #include"kaipushpongtai.h"
 #include<cstdlib>
 #include<ctime>
+#include"ui.h"
 #pragma once
 using namespace std;
 using namespace sf;
@@ -11,7 +12,7 @@ using namespace sf;
 class shogiengine  
 {
 public:
-	 
+	
 	bool showmove = false;
 	vector<string> moveHistory; // เพิ่มตัวแปร moveHistory
 	void recordMove(std::string moveString); // เพิ่มฟังก์ชัน recordMove
@@ -80,7 +81,7 @@ public:
 	Sprite capturedSprites[40]; // Sprites for captured pieces
 	Sprite capturedSprites2[16];
 	void smoothmove(int);
-	void resetgame();
+	void resetgame(ui&);
 	bool isPathBlocked(int, int, int);
 	void loadsprite();
 	void loadtile();
@@ -240,8 +241,8 @@ void shogiengine::smoothmove(int current) {
 	}
 }
 
-void shogiengine::resetgame() {
-
+void shogiengine::resetgame(ui& ui) {
+ 
 	for (int i = 0; i < 40; i++)
 	{
 
@@ -268,6 +269,8 @@ void shogiengine::resetgame() {
 	turn = 1;
 	normalsprite = false;
 	 deathsprite = false;
+	 moveHistory.clear();
+	 ui.loadtext();
 loadsprite();
 }
 
@@ -614,7 +617,8 @@ void shogiengine::recordMove(string moveString) {
 		cout << "\n======== Turn " << currentTurn << " ========\n"; // พิมพ์หัวข้อ Turn
 	}
 	cout << "   " << playerColor << ": " << moveString << endl;// แสดงผลรายละเอียดการเดินหมาก โดยเยื้องหน้าเล็กน้อย
-	moveHistory.push_back(moveString);
+	 
+	moveHistory.insert(moveHistory.begin(), moveString);
 }
 //ประวัติการเดิน
 
