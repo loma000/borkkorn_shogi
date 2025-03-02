@@ -15,7 +15,7 @@
 
 ui::ui(float width, float height)
 {
-	if (!font.loadFromFile("Roboto_Black.ttf")) {
+	if (!font.loadFromFile("Minecraft.ttf")) {
 		///for handle error
 	}
 	menu[0].setFont(font);
