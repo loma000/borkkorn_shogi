@@ -153,7 +153,7 @@ int main()
 				if (event.type == Event::MouseMoved) {
 					
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-					sf::Vector2f mousePosF(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+					sf::Vector2f mousePosF = window.mapPixelToCoords(mousePosition);
 					
 
 					if (!gamemodescreen) {
