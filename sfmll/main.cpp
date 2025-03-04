@@ -136,8 +136,9 @@ int main()
 	//time
 	Clock clock1;
 	Clock clock2;
-	float countdownTime1 = 1200.99f;
-	float countdownTime2 = 1200.99f;
+	float time = 1200.99f;
+	float countdownTime1 = time;
+	float countdownTime2 = time;
 	bool timerActive1 = true;
 	bool timerActive2 = false;
 
@@ -187,8 +188,8 @@ int main()
 
 			if (Keyboard::isKeyPressed(Keyboard::R)) {
 				shogi.resetgame(mode);
-				countdownTime1 = 1200.99f;
-				countdownTime2 = 1200.99f;
+				countdownTime1 = time;
+				countdownTime2 = time;
 				isblackwin = false;
 				iswhitewin = false;
 				escnow = false;
@@ -346,16 +347,16 @@ int main()
 					}
 					if (shogi.restart.getGlobalBounds().contains(mousePos) && escnow == true) {
 						escnow = false;
-						countdownTime1 = 1200.99f;
-						countdownTime2 = 1200.99f;
+						countdownTime1 = time;
+						countdownTime2 = time;
 						shogi.resetgame(mode);
 
 					}
 					if (shogi.back.getGlobalBounds().contains(mousePos) && escnow == true) {
 						escnow = false;
 						Gamestatus = false;
-						countdownTime1 = 1200.99f;
-						countdownTime2 = 1200.99f;
+						countdownTime1 = 10.99f;
+						countdownTime2 = 10.99f;
 						timerActive1 = false;
 						timerActive2 = false;
 						shogi.resetgame(mode);
@@ -606,7 +607,8 @@ int main()
 
 		}
 		//time
-		if (Gamestatus == true) {
+		if (Gamestatus == true) { 
+			if(gamemode == 3){
 			Time elapsed1 = clock1.getElapsedTime();
 			Time elapsed2 = clock2.getElapsedTime();
 			int t1 = elapsed1.asSeconds();
@@ -656,7 +658,7 @@ int main()
 					timerActive2 = false;
 					iswhitewin = true;
 				}
-
+			}
 			}
 			else {
 				timerActive1 = false;
