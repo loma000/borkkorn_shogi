@@ -9,10 +9,10 @@
 using namespace std;
 using namespace sf;
 
-class shogiengine  
+class shogiengine
 {
 public:
-	
+
 	bool showmove = false;
 	vector<string> moveHistory; // เพิ่มตัวแปร moveHistory
 	void recordMove(std::string moveString); // เพิ่มฟังก์ชัน recordMove
@@ -46,8 +46,8 @@ public:
 	vector<int> pawnidforrset = { -9,-5,-4,-3,-1,-3,-4,-5,-9,-2,-7,-8,-8,-8,-8,-8,-8,-8,-8,-8, 9,5,4,3,1,3,4,5,9,2,7,8,8,8,8,8,8,8,8,8
 	};
 
-	vector<int> capturepawnid = {  -2,-3,-4,-5,-7,-8,-9, 2,3,4,5,7,8,9 };
-	vector<pair<string, string>> deathmark = { {"rook","white"},{"gold","white"},{"silver","white"} ,{ "knight","white" },{"bishop","white"} ,{ "pawn","white" },{"lance","white"} 
+	vector<int> capturepawnid = { -2,-3,-4,-5,-7,-8,-9, 2,3,4,5,7,8,9 };
+	vector<pair<string, string>> deathmark = { {"rook","white"},{"gold","white"},{"silver","white"} ,{ "knight","white" },{"bishop","white"} ,{ "pawn","white" },{"lance","white"}
 	,{"rook", "black" },{"gold","black"},{"silver","black"} ,{ "knight","black" },{"bishop","black"} ,{ "pawn","black" },{"lance","black"} };
 	int deathcount[14];
 	Sprite gamble;
@@ -69,7 +69,7 @@ public:
 	bool promotecheck = false;
 	Sprite f[40];
 	Sprite mvt[81];
-	static int turn ;
+	static int turn;
 	int size = 48;
 	bool move = false;
 	int borderx = 70;
@@ -94,9 +94,9 @@ public:
 	void loadcapturesprite();
 	void diecount();
 	bool dropCheck(int, int, int);
-	void loadtextureyesno(path     );
+	void loadtextureyesno(path);
 	void drawpromotecheck(RenderWindow&);
-	int gamblechange(int  );
+	int gamblechange(int);
 	Sprite esc;
 	Texture esctex;
 	Sprite restart;
@@ -109,21 +109,23 @@ public:
 	Texture blackwintex;
 	Sprite whitewin;
 	Texture whitewintex;
+	Sprite number[16];
+	Texture numbertex;
 };
 
 int shogiengine::turn = 1;
-int shogiengine :: gamblechange(int id){
+int shogiengine::gamblechange(int id) {
 	deathcount[id]--;
 	string name = deathmark[id].first;
 	string color = deathmark[id].second;
 	string namechange;
 	int idchange;
-	switch (rand()%8+1)
+	switch (rand() % 8 + 1)
 	{
 	case 1:
 		namechange = "rook";
 		idchange = 2;
-break;
+		break;
 	case 2:
 		namechange = "gold";
 		idchange = 3;
@@ -166,7 +168,7 @@ break;
 
 	for (int i = 0; i < 40; i++)
 	{
-		if (deathmark[id] == mark[i]&&dead[i]==1) {
+		if (deathmark[id] == mark[i] && dead[i] == 1) {
 
 			idchange = color == "black" ? idchange * -1 : idchange;
 			pawnid[i] = idchange;
@@ -180,26 +182,26 @@ break;
 }
 void shogiengine::loadtextureyesno(path  p) {
 	gambletex.loadFromFile(p.gambletex);
-	yestex.loadFromFile(  p.yestexe);
-	notex.loadFromFile( p.notexe);
+	yestex.loadFromFile(p.yestexe);
+	notex.loadFromFile(p.notexe);
 	yes.setTexture(yestex);
 	no.setTexture(notex);
 	gamble.setTexture(gambletex);
 	yes.setPosition(76 + borderx, 196 + bordery);
 	no.setPosition(270 + borderx, 196 + bordery);
-	gamble.setPosition(465 + borderx, 213 + bordery);
+	gamble.setPosition(575, 415);
 	esctex.loadFromFile(p.escape);
 	esc.setTexture(esctex);
-	esc.setPosition(875 + borderx, 0 );
+	esc.setPosition(875 + borderx, 0);
 	restarttex.loadFromFile(p.restart);
 	restart.setTexture(restarttex);
-	restart.setPosition(350 + borderx, 50+ bordery);
+	restart.setPosition(350 + borderx, 50 + bordery);
 	contitex.loadFromFile(p.conti);
 	conti.setTexture(contitex);
 	conti.setPosition(350 + borderx, 150 + bordery);
 	backtex.loadFromFile(p.back);
 	back.setTexture(backtex);
-	back.setPosition(350 + borderx,250 + bordery);
+	back.setPosition(350 + borderx, 250 + bordery);
 	blackwintex.loadFromFile(p.blackwin);
 	blackwin.setTexture(blackwintex);
 	blackwin.setPosition(300 + borderx, 80 + bordery);
@@ -209,17 +211,17 @@ void shogiengine::loadtextureyesno(path  p) {
 }
 
 
-void shogiengine::drawpromotecheck(RenderWindow& window){
+void shogiengine::drawpromotecheck(RenderWindow& window) {
 
 	if (promotecheck) {
 		window.draw(yes);
 		window.draw(no);
-}
+	}
 
 }
 
 void shogiengine::smoothmove(int current) {
-	float speed =4;
+	float speed = 4;
 	Vector2f target(startlocation[current].first * size + borderx, startlocation[current].second * size + bordery);
 
 	Vector2f shogilocate = f[current].getPosition();
@@ -242,7 +244,7 @@ void shogiengine::smoothmove(int current) {
 }
 
 void shogiengine::resetgame(ui& ui) {
- 
+
 	for (int i = 0; i < 40; i++)
 	{
 
@@ -256,7 +258,7 @@ void shogiengine::resetgame(ui& ui) {
 		alreadydead[i] = 0;
 		mark[i] = markforreset[i];
 		pawnid[i] = pawnidforrset[i];
-		
+
 	}
 	for (int i = 0;i < 14;i++) { deathcount[i] = 0; }
 
@@ -268,10 +270,10 @@ void shogiengine::resetgame(ui& ui) {
 	}
 	turn = 1;
 	normalsprite = false;
-	 deathsprite = false;
-	 moveHistory.clear();
-	 ui.loadtext();
-loadsprite();
+	deathsprite = false;
+	moveHistory.clear();
+	ui.loadtext();
+	loadsprite();
 }
 
 bool shogiengine::isPathBlocked(int x, int y, int id) {
@@ -340,7 +342,7 @@ bool shogiengine::isPathBlocked(int x, int y, int id) {
 
 
 
-  void shogiengine::loadsprite() {
+void shogiengine::loadsprite() {
 
 
 	for (int i = 0; i < 40; i++)
@@ -492,70 +494,84 @@ void shogiengine::promoted(int id) {
 void shogiengine::capturePiece(int index) {
 
 	for (int i = 0; i < 40; i++)
-	{ if(dead[i] == 1&&iscapture[i] == 0) {
-capturedPieces.push_back(i);
-iscapture[i] =1;
-	cout << "Piece " << i << " captured!" << endl;}
+	{
+		if (dead[i] == 1 && iscapture[i] == 0) {
+			capturedPieces.push_back(i);
+			iscapture[i] = 1;
+			cout << "Piece " << i << " captured!" << endl;
+		}
 	}
-	
-	
+
+
 }
 
 void shogiengine::drawCapturedPieces(RenderWindow& window) {
+
+
 	for (int i = 0; i < 14; i++)
 	{
-		if (deathcount[i]>0)
+
+		if (deathcount[i] > 0)
 		{
+
 			showdeadmark[i] = 1;
-window.draw( capturedSprites2[i]);
-		}else showdeadmark[i] = 0;
-		
+			window.draw(capturedSprites2[i]);window.draw(number[i]);loadcapturesprite();
+		}
+		else showdeadmark[i] = 0;
+
 	}
 }
-void shogiengine::diecount() { 
+void shogiengine::diecount() {
 	for (int i = 0;i < 40;i++) {
 		for (int j = 0; j < 14; j++)
 		{
-			if (dead[i] == 1 && mark[i] == deathmark[j]&& alreadydead[i] ==0)
+			if (dead[i] == 1 && mark[i] == deathmark[j] && alreadydead[i] == 0)
 			{
-				alreadydead[i]=1;
+				alreadydead[i] = 1;
 				deathcount[j]++;
 				break;
 			}
 		}
 	}
-		
 
 
-} 
+
+}
 
 void shogiengine::loadcapturesprite() {
 
-
 	for (int i = 0; i < 14; i++)
 	{
-		 
 		int n = capturepawnid[i];
 		int x = abs(n) - 1;
-		int y = i <  7 ? 0 : 1;
+		int y = i < 7 ? 0 : 1;
+		int yy = deathcount[i] < 10 ? 0 : 1;
 		capturedSprites2[i].setTextureRect(IntRect(size * x, size * y, size, size));
-		
-		
-		if (i<7)
+
+		if (deathcount[i] < 10)
 		{
-		capturedSprites2[i].setPosition(  borderx-size, size * i + bordery );
+			number[i].setTextureRect(IntRect(size * (deathcount[i] - 1), size * yy, size, size));
+
+		}
+		else {
+
+			number[i].setTextureRect(IntRect(size * (deathcount[i] - 10), size * yy, size, size));
+
+		}
+		if (i < 7)
+		{
+			capturedSprites2[i].setPosition(borderx - size, size * i + bordery);
+			number[i].setPosition(borderx - size, size * i + bordery);
 
 		}
 		else
 		{
-			 
-			capturedSprites2[i].setPosition(borderx + size*9, size * (i-7) + bordery +  2*size);
+			number[i].setPosition(borderx + size * 9, size * (i - 7) + bordery + 2 * size);
+			capturedSprites2[i].setPosition(borderx + size * 9, size * (i - 7) + bordery + 2 * size);
 		}
-		
 	}
-
 }
-bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
+bool shogiengine::dropCheck(int x, int y, int pieceIndex) {
 	// Board bounds check (assuming 9x9 board: indices 0 to 8)
 	if (x < 0 || x >= 9 || y < 0 || y >= 9)
 		return false;
@@ -583,12 +599,12 @@ bool shogiengine::dropCheck( int x, int y,int pieceIndex) {
 	// 2. Promotion zone restrictions:
 	// For Pawn and Lance, cannot drop on the last rank (for black, y == 8; for white, y == 0).
 	if (piece == "pawn" || piece == "lance") {
-		if ((color == "black" && y == 0) || (color == "white" && y ==8))
+		if ((color == "black" && y == 0) || (color == "white" && y == 8))
 			return false;
 	}
 	// For Knight, cannot drop on the last two ranks.
 	if (piece == "knight") {
-		if ((color == "black" && y <= 1) || (color == "white" && y>= 7))
+		if ((color == "black" && y <= 1) || (color == "white" && y >= 7))
 			return false;
 	}
 
@@ -617,9 +633,7 @@ void shogiengine::recordMove(string moveString) {
 		cout << "\n======== Turn " << currentTurn << " ========\n"; // พิมพ์หัวข้อ Turn
 	}
 	cout << "   " << playerColor << ": " << moveString << endl;// แสดงผลรายละเอียดการเดินหมาก โดยเยื้องหน้าเล็กน้อย
-	 
+
 	moveHistory.insert(moveHistory.begin(), moveString);
 }
 //ประวัติการเดิน
-
-

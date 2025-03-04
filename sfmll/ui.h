@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
- 
+
 #include"kaipushpongtai.h"
 using namespace std;
 #define Menu_Items 3
@@ -17,11 +17,11 @@ private:
 	Text menu[Menu_Items];
 	Text mode[Mode_Items];
 public:
-	 
+
 
 	ui(float width, float height);
-	
-	void deawtext(RenderWindow&, bool,vector<string> &);
+
+	void deawtext(RenderWindow&, bool, vector<string>&);
 	void loadtext();
 	void draw(RenderWindow& window, bool showMode);
 	bool isPlayClicked(Vector2f mousePos);
@@ -31,20 +31,20 @@ public:
 	bool isTutorialClicked(Vector2f mousePos);
 	bool isExitClicked(Vector2f mousePos);
 	bool isBackClicked(Vector2f mousePos);
-	void updateMenuHover(Vector2f mousePos,bool showmode);
+	void updateMenuHover(Vector2f mousePos, bool showmode);
 };
 
 void ui::loadtext() {
 
 
-	for (int i = 0; i < 12;i++)
+	for (int i = 0; i < 9;i++)
 	{
 		replay[i].setFont(font);
 		replay[i].setFillColor(Color::Black);
 
 		replay[i].setCharacterSize(12);
-		replay[i].setString( "");
-		replay[i].setPosition(625,60 + 30* i);
+		replay[i].setString("");
+		replay[i].setPosition(580, 125 + 30 * i);
 	}
 
 
@@ -54,13 +54,13 @@ void ui::loadtext() {
 void ui::deawtext(RenderWindow& window, bool gamemode, vector<string>& history) {
 
 
-	for (int i = 0; i < history.size()       &&  i < 12; i++)
+	for (int i = 0; i < history.size() && i < 12; i++)
 	{
 		replay[i].setString(history[i]);
 	}
 
 
-	for (int i = 0; i < 12&& gamemode; i++)
+	for (int i = 0; i < 12 && gamemode; i++)
 	{
 
 
@@ -110,7 +110,7 @@ ui::ui(float width, float height)
 
 	mode[2].setFont(font);
 	mode[2].setFillColor(Color::White);
-	mode[2].setString("3");
+	mode[2].setString("Time Attack");
 	mode[2].setOrigin(mode[2].getGlobalBounds().width / 2, mode[2].getGlobalBounds().height / 2);
 	mode[2].setPosition(Vector2f(width / 2, height / (Mode_Items + 1) * 3));
 
