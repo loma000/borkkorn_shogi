@@ -815,7 +815,7 @@ int main()
 				window.draw(shogi.gamble);
 			}
 		}
-		if (gamemode == 3) {
+		if (gamemode == 3&& Gamestatus) {
 			window.draw(textBorder1);  // วาดกรอบก่อนข้อความ
 			window.draw(countdownText1);
 			window.draw(textBorder2);  // วาดกรอบก่อนข้อความ
