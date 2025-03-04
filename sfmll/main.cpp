@@ -191,6 +191,7 @@ int main()
 				countdownTime2 = 1200.99f;
 				isblackwin = false;
 				iswhitewin = false;
+				escnow = false;
 			}
 			if (Gamestatus == true) {
 				if (Keyboard::isKeyPressed(Keyboard::Escape)) {
