@@ -176,20 +176,20 @@ void ui::updateMenuHover(Vector2f mousePos, bool showmode) {
 	if (!showmode) {
 		for (int i = 0; i < Menu_Items; i++) {
 			if (menu[i].getGlobalBounds().contains(mousePos)) {
-				menu[i].setFillColor(sf::Color::Red); // Change color on hover
+				menu[i].setFillColor(sf::Color::Red);  
 			}
 			else {
-				menu[i].setFillColor(sf::Color::White); // Reset to white when not hovering
+				menu[i].setFillColor(sf::Color::White);  
 			}
 		}
 	}
 	else {
 		for (int i = 0; i < Mode_Items; i++) {
 			if (mode[i].getGlobalBounds().contains(mousePos)) {
-				mode[i].setFillColor(sf::Color::Red); // Change color on hover
+				mode[i].setFillColor(sf::Color::Red);  
 			}
 			else {
-				mode[i].setFillColor(sf::Color::White); // Reset to white when not hovering
+				mode[i].setFillColor(sf::Color::White);  
 			}
 		}
 	}

@@ -54,9 +54,11 @@ public:
 	Sprite atk[81];
 	Texture yestex;
 	Texture notex;
+	Texture promotetex;
 	Texture gambletex;
 	Sprite yes;
 	Sprite no;
+	Sprite promote;
 	int alreadydead[40];
 	int amdead[40];
 	int  showatk[81];
@@ -77,8 +79,8 @@ public:
 	bool gambleon = false;
 	bool normalsprite = false;
 	bool deathsprite = false;
-	vector<int> capturedPieces; // Store captured piece indices
-	Sprite capturedSprites[40]; // Sprites for captured pieces
+	vector<int> capturedPieces;  
+	Sprite capturedSprites[40];  
 	Sprite capturedSprites2[16];
 	void smoothmove(int);
 	void resetgame(ui&);
@@ -208,12 +210,16 @@ void shogiengine::loadtextureyesno(path  p) {
 	whitewintex.loadFromFile(p.whitewin);
 	whitewin.setTexture(whitewintex);
 	whitewin.setPosition(300 + borderx, 80 + bordery);
+	promotetex.loadFromFile(p.promotettex);
+	promote.setTexture(promotetex);
+	promote.setPosition(134 + borderx, 100 + bordery);
 }
 
 
 void shogiengine::drawpromotecheck(RenderWindow& window) {
 
 	if (promotecheck) {
+		window.draw(promote);
 		window.draw(yes);
 		window.draw(no);
 	}
@@ -281,39 +287,39 @@ bool shogiengine::isPathBlocked(int x, int y, int id) {
 	string color = mark[id].second;
 	int sx = startlocation[id].first, sy = startlocation[id].second;
 
-	// Only applicable for sliding pieces: Rook, Bishop, Promoted Rook, Promoted Bishop, and Lance  
+	  
 	if (piece == "rook" || piece == "bishop" || ispromoted[id] == 1) {
-		// Promoted Bishop (Dragon Horse) moves like a bishop but also one square in any direction
+		 
 		if (piece == "bishop" && ispromoted[id] == 1) {
 			if (abs(x - sx) <= 1 && abs(y - sy) <= 1) {
-				return false; // Can move like a king, no need to check path
+				return false;  
 			}
 		}
-		// Promoted Rook (Dragon King) moves like a rook but also one square diagonally
+		 
 		if (piece == "rook" && ispromoted[id] == 1) {
 			if (abs(x - sx) == 1 && abs(y - sy) == 1) {
-				return false; // Can move one square diagonally, no need to check path
+				return false; 
 			}
 		}
 
-		// Compute direction of movement
+		 
 		int dx = (x > sx) ? 1 : (x < sx) ? -1 : 0;
 		int dy = (y > sy) ? 1 : (y < sy) ? -1 : 0;
 
-		// Ensure Bishop moves diagonally and Rook moves straight
+		 
 		if ((piece == "bishop" || (piece == "bishop" && ispromoted[id] == 1)) && abs(x - sx) != abs(y - sy)) {
-			return true; // Invalid diagonal move
+			return true; 
 		}
 		if ((piece == "rook" || (piece == "rook" && ispromoted[id] == 1)) && dx != 0 && dy != 0) {
-			return true; // Invalid straight move
+			return true;  
 		}
 
-		// Check if path is blocked
+		 
 		int cx = sx + dx, cy = sy + dy;
 		while (cx != x || cy != y) {
 			for (int i = 0; i < 40; i++) {
 				if (startlocation[i].first == cx && startlocation[i].second == cy && dead[i] == 0) {
-					return true; // Path is blocked
+					return true;  
 				}
 			}
 			cx += dx;
@@ -321,21 +327,21 @@ bool shogiengine::isPathBlocked(int x, int y, int id) {
 		}
 	}
 
-	// Special case for the unpromoted lance (moves only straight forward)
+ 
 	if (piece == "lance" && ispromoted[id] == 0) {
-		int dir = (color == "black") ? 1 : -1; // Direction (black moves down, white moves up)
-		int cy = sy + dir; // Move in the correct direction
+		int dir = (color == "black") ? 1 : -1; 
+		int cy = sy + dir;  
 		while (cy != y) {
 			for (int i = 0; i < 40; i++) {
 				if (startlocation[i].first == sx && startlocation[i].second == cy && dead[i] == 0) {
-					return true; // Path is blocked
+					return true;  
 				}
 			}
-			cy += dir; // Continue moving forward
+			cy += dir;  
 		}
 	}
 
-	return false; // Path is clear
+	return false;  
 }
 
 
@@ -378,7 +384,7 @@ bool shogiengine::walkcheck(int x, int y, int id) {
 	string color = mark[id].second;
 	int sx = startlocation[id].first, sy = startlocation[id].second;
 
-	// Direction modifier (1 for black, -1 for white)
+	 
 	int dir = (color == "black") ? 1 : -1;
 
 	if (piece == "pawn" && ispromoted[id] == 0) {
@@ -572,20 +578,20 @@ void shogiengine::loadcapturesprite() {
 	}
 }
 bool shogiengine::dropCheck(int x, int y, int pieceIndex) {
-	// Board bounds check (assuming 9x9 board: indices 0 to 8)
+	 
 	if (x < 0 || x >= 9 || y < 0 || y >= 9)
 		return false;
 
-	// 1. Check that the target square is empty.
+	 
 	for (int i = 0; i < 40; i++) {
 		if (dead[i] == 0 && startlocation[i].first == x && startlocation[i].second == y) {
-			return false;  // The square is occupied.
+			return false;  
 		}
 	}
 
-	// Retrieve piece type and color.
-	// If dropping a captured piece (deathsprite active), use deathmark vector;
-	// otherwise, use the normal mark vector.
+	 
+	 
+	 
 	string piece, color;
 	if (deathsprite) {
 		piece = deathmark[pieceIndex].first;
@@ -596,20 +602,18 @@ bool shogiengine::dropCheck(int x, int y, int pieceIndex) {
 		color = mark[pieceIndex].second;
 	}
 
-	// 2. Promotion zone restrictions:
-	// For Pawn and Lance, cannot drop on the last rank (for black, y == 8; for white, y == 0).
+	 
 	if (piece == "pawn" || piece == "lance") {
 		if ((color == "black" && y == 0) || (color == "white" && y == 8))
 			return false;
 	}
-	// For Knight, cannot drop on the last two ranks.
+	 
 	if (piece == "knight") {
 		if ((color == "black" && y <= 1) || (color == "white" && y >= 7))
 			return false;
 	}
 
-	// 3. Pawn drop rule (Nifu):
-	// A player may not drop a pawn in a file (column) that already has an unpromoted pawn of the same color.
+ 
 	if (piece == "pawn") {
 		for (int i = 0; i < 40; i++) {
 			if (dead[i] == 0 && mark[i].first == "pawn" && mark[i].second != color && ispromoted[i] == 0) {
@@ -618,22 +622,22 @@ bool shogiengine::dropCheck(int x, int y, int pieceIndex) {
 			}
 		}
 	}
-	// All checks passed: the drop is valid.
+	 
 	isdropped[pieceIndex] = 0;
 	return true;
 
 
 }
-//ประวัติการเดิน
+ 
 void shogiengine::recordMove(string moveString) {
-	int currentTurn = (turn + 1) / 2; // คำนวณ Turn ปัจจุบัน
+	int currentTurn = (turn + 1) / 2; 
 	string playerColor = (turn % 2 != 0) ? "Black" : "White";
-	// ตรวจสอบว่าเป็นการขึ้น Turn ใหม่หรือไม่ (Turn ของดำ)
-	if (turn % 2 == 0) { // Turn ของดำ (เลขคี่) - Turn ใหม่เริ่มต้นที่ Turn ของดำเสมอ
-		cout << "\n======== Turn " << currentTurn << " ========\n"; // พิมพ์หัวข้อ Turn
+	 
+	if (turn % 2 == 0) { 
+		cout << "\n======== Turn " << currentTurn << " ========\n";  
 	}
-	cout << "   " << playerColor << ": " << moveString << endl;// แสดงผลรายละเอียดการเดินหมาก โดยเยื้องหน้าเล็กน้อย
+	cout << "   " << playerColor << ": " << moveString << endl; 
 
 	moveHistory.insert(moveHistory.begin(), moveString);
 }
-//ประวัติการเดิน
+ 

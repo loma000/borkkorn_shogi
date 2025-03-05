@@ -131,7 +131,7 @@ int main()
 	ui mode(window.getSize().x, window.getSize().y);
 
 	mode.loadtext();
-	thread bgmThread(loopSound); //play background music
+	thread bgmThread(loopSound); 
 	bgmThread.detach();
 	//time
 	Clock clock1;
@@ -145,7 +145,7 @@ int main()
 
 
 	Font font1;
-	if (!font1.loadFromFile("Roboto-Black.ttf"))  // ตรวจสอบพาธให้ถูกต้อง
+	if (!font1.loadFromFile("Roboto-Black.ttf"))   
 	{
 		std::cerr << "Error loading font!" << std::endl;
 		return -1;
@@ -154,12 +154,12 @@ int main()
 	countdownText1.setFont(font1);
 	countdownText1.setCharacterSize(30);
 	countdownText1.setFillColor(sf::Color::Black);
-	countdownText1.setPosition(578, 426);  // กำหนดตำแหน่งของข้อความบนหน้าจอ
+	countdownText1.setPosition(578, 426);   
 
 	FloatRect textBounds1 = countdownText1.getLocalBounds();
 	RectangleShape textBorder1(sf::Vector2f(textBounds1.width + 148, textBounds1.height + 50));
-	textBorder1.setFillColor(sf::Color::White); // โปร่งใส
-	textBorder1.setOutlineThickness(1);              // ความหนาของเส้นกรอบ
+	textBorder1.setFillColor(sf::Color::White);  
+	textBorder1.setOutlineThickness(1);               
 	textBorder1.setOutlineColor(sf::Color::Black);
 	textBorder1.setPosition(countdownText1.getPosition().x - 5, countdownText1.getPosition().y - 5);
 
@@ -167,12 +167,12 @@ int main()
 	countdownText2.setFont(font1);
 	countdownText2.setCharacterSize(30);
 	countdownText2.setFillColor(sf::Color::Black);
-	countdownText2.setPosition(578, 46);  // กำหนดตำแหน่งของข้อความบนหน้าจอ
+	countdownText2.setPosition(578, 46); 
 
 	FloatRect textBounds2 = countdownText2.getLocalBounds();
 	RectangleShape textBorder2(sf::Vector2f(textBounds2.width + 148, textBounds2.height + 50));
-	textBorder2.setFillColor(sf::Color::White); // โปร่งใส
-	textBorder2.setOutlineThickness(1);              // ความหนาของเส้นกรอบ
+	textBorder2.setFillColor(sf::Color::White);  
+	textBorder2.setOutlineThickness(1);               
 	textBorder2.setOutlineColor(sf::Color::Black);
 	textBorder2.setPosition(countdownText2.getPosition().x - 5, countdownText2.getPosition().y - 5);
 
@@ -208,7 +208,7 @@ int main()
 
 
 				if (!gamemodescreen) {
-					menu.updateMenuHover(mousePosF, false);  // Update hover effect
+					menu.updateMenuHover(mousePosF, false);   
 				}
 				else {
 					mode.updateMenuHover(mousePosF, true);
@@ -219,7 +219,7 @@ int main()
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
 				sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-				if (!Gamestatus && !gamemodescreen) { // Menu screen
+				if (!Gamestatus && !gamemodescreen) {  
 					if (menu.isPlayClicked(mousePos)) {
 						cout << " Play button clicked! Switching to game mode." << endl;
 						gamemodescreen = true;
@@ -233,7 +233,7 @@ int main()
 					}
 					if (TutorialScreen) {
 						if (tutorialPage == 0) {
-							FloatRect moreRulesButton(225, 380, 145, 45); // (x, y, width, height)
+							FloatRect moreRulesButton(225, 380, 145, 45);  
 							FloatRect moveSetsButton(430, 380, 145, 45);
 							FloatRect GambleRuleButton(635, 380, 145, 45);
 							if (moreRulesButton.contains(mousePos)) {
@@ -272,10 +272,10 @@ int main()
 							cout << "Back button clicked!" << endl;
 							PlaySound(TEXT("asset/button2.wav"), NULL, SND_FILENAME | SND_ASYNC);
 							if (tutorialPage == 3) {
-								tutorialPage = 2;  // Go from Page 3 to Page 2
+								tutorialPage = 2;   
 							}
 							else if (tutorialPage == 2 || tutorialPage == 1 || tutorialPage == 4) {
-								tutorialPage = 0;  // Go from Page 2 to Page 0
+								tutorialPage = 0;   
 							}
 							else if (tutorialPage == 0) {
 								TutorialScreen = false;
@@ -288,11 +288,7 @@ int main()
 
 
 
-						// Separate event handling for keyboard input
-						/*if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-							cout << "Exiting tutorial." << endl;
-							TutorialScreen = false;
-						}*/
+					 
 					}
 
 
@@ -364,7 +360,7 @@ int main()
 					if (escnow == false) {
 
 
-						if (!spriteMoved && shogi.showmove)
+						if (!spriteMoved && shogi.showmove&& !(isblackwin || iswhitewin))
 						{
 
 
@@ -379,7 +375,7 @@ int main()
 									{
 										if (x == shogi.startlocation[i].first && y == shogi.startlocation[i].second && shogi.dead[i] == 0) {
 											shogi.amdead[i] = 1;
-											//cout << shogi.mark[i].first << " " << i << " dead" << endl;
+										 
 											shogi.ispromoted[i] = 0;
 
 											break;
@@ -391,31 +387,31 @@ int main()
 									shogi.normalsprite = false;
 									shogi.startlocation[current].first = x;
 									shogi.startlocation[current].second = y;
-									//f[current].setPosition(size * startlocation[current].first, size * startlocation[current].second);
+									 
 									shogi.promoted(current);
 									bool isPromotedMove = shogi.ispromoted[current] == 1;
-									//cout << current << " " << shogi.ispromoted[current] << endl;
+									 
 									shogi.showatk[j] = 0;
-									//cout << "isclickatk";
+									 
 									PlaySound(TEXT("asset/capture.wav"), NULL, SND_FILENAME | SND_ASYNC);
 									shogi.turn++;
 									spriteMoved = true;
-									// ---       ǹ      ͺѹ ֡    ѵ  ---
+									 
 									string movedPieceName = shogi.mark[current].first;
 									pair<int, int> startLocation = shogi.startlocation[current];
 									pair<int, int> endLocation;
-									Vector2f atkPosition = shogi.atk[j].getPosition(); //     ͵           ͤ    Ѵਹ
+									Vector2f atkPosition = shogi.atk[j].getPosition();  
 									endLocation.first = int((atkPosition.x - shogi.borderx) / shogi.size);
 									endLocation.second = int((atkPosition.y - shogi.bordery) / shogi.size);
 									string capturedPieceName = "";
-									for (int i = 0; i < 40; i++) { //  Ҫ     ҡ   ١ Թ
+									for (int i = 0; i < 40; i++) {  
 										if (endLocation.first == shogi.startlocation[i].first && endLocation.second == shogi.startlocation[i].second && shogi.dead[i] == 0) {
 											capturedPieceName = shogi.mark[i].first;
 											break;
 										}
 									}
 
-									moveString = (shogi.turn % 2 == 0 ? "White" : "Black"); //   Ѻ   Թ    
+									moveString = (shogi.turn % 2 == 0 ? "White" : "Black");     
 									if (isPromotedMove) {
 										moveString += " " + movedPieceName + " (Promote) From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
 									}
@@ -426,7 +422,7 @@ int main()
 										moveString += " and Slay " + capturedPieceName;
 									}
 									if (!shogi.promotecheck) { shogi.recordMove(moveString); }
-									// ---     ǹ        ---
+									 
 
 									break;
 								};
@@ -434,7 +430,7 @@ int main()
 
 							}
 						}
-						if (!spriteMoved && shogi.showmove)
+						if (!spriteMoved && shogi.showmove&& !(isblackwin || iswhitewin))
 						{
 
 
@@ -461,7 +457,7 @@ int main()
 												shogi.alreadydead[i] = 0;
 												shogi.pawnid[i] *= -1;
 
-												//cout << shogi.deathcount[current];
+												 
 												current = i;
 												shogi.loadsprite();
 												break;
@@ -479,28 +475,28 @@ int main()
 									}
 									else
 									{
-										//cout << "sus";
+										 
 										shogi.f[current].setPosition(shogi.size * shogi.startlocation[current].first + shogi.borderx, shogi.size * shogi.startlocation[current].second + shogi.bordery);
 									}
 
-									//cout << current << " " << shogi.ispromoted[current] << endl;
+									 
 									shogi.showmvt[k] = 0;
 									shogi.normalsprite = false;
-									//cout << "isclickmvt";
+									 
 									PlaySound(TEXT("asset/move.wav"), NULL, SND_FILENAME | SND_ASYNC);
 									shogi.turn++;
 									spriteMoved = true;
 
-									// ---  ѹ ֡    ѵ  ---
+								 
 									movedPieceName = shogi.mark[current].first;
 									pair<int, int> startLocation = shogi.startlocation[current];
 									pair<int, int> endLocation;
-									Vector2f mvtPosition = shogi.mvt[k].getPosition(); //     ͵           ͤ    Ѵਹ
+									Vector2f mvtPosition = shogi.mvt[k].getPosition();  
 									endLocation.first = int((mvtPosition.x - shogi.borderx) / shogi.size);
 									endLocation.second = int((mvtPosition.y - shogi.bordery) / shogi.size);
 									bool isPromotedMove = shogi.ispromoted[current] == 1;
 
-									moveString = (shogi.turn % 2 == 0 ? "White" : "Black"); //   Ѻ   Թ    
+									moveString = (shogi.turn % 2 == 0 ? "White" : "Black");    
 
 									if (isPromotedMove) {
 										moveString += " " + movedPieceName + " (Promote) From (" + to_string(first + 1) + "," + to_string(second + 1) + ") To (" + to_string(endLocation.first + 1) + "," + to_string(endLocation.second + 1) + ")";
@@ -513,7 +509,7 @@ int main()
 									}
 									if (!shogi.promotecheck) { shogi.recordMove(moveString); }
 									shogi.deathsprite = false;
-									// ---     ǹ        ---
+									 
 
 									break;
 
@@ -551,11 +547,11 @@ int main()
 						{
 
 
-							if (!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && !shogi.promotecheck) {
+							if (!(isblackwin || iswhitewin) &&!shogi.move && shogi.f[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && shogi.dead[i] == 0 && (shogi.turn % 2 == 0 && shogi.mark[i].second == "black" || shogi.turn % 2 == 1 && shogi.mark[i].second == "white") && !shogi.promotecheck) {
 								current = i;
 								shogi.showmove = true;
 								spriteMoved = false;
-								//cout << shogi.dead[i] << endl;
+								 
 								shogi.normalsprite = true;
 
 								break;
@@ -567,11 +563,11 @@ int main()
 
 
 
-							if (!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black") && shogi.showdeadmark[i] == 1 && !shogi.promotecheck) {
+							if (!(isblackwin || iswhitewin) &&!shogi.move && shogi.capturedSprites2[i].getGlobalBounds().contains(mousePos) && !shogi.showmove && (shogi.turn % 2 == 0 && shogi.deathmark[i].second == "white" || shogi.turn % 2 == 1 && shogi.deathmark[i].second == "black") && shogi.showdeadmark[i] == 1 && !shogi.promotecheck) {
 								current = i;
 								shogi.showmove = true;
 								spriteMoved = false;
-								//cout << current << endl;
+							 
 								shogi.deathsprite = true;
 								shogi.gambleon = true;
 								break;
@@ -607,6 +603,12 @@ int main()
 
 		}
 		//time
+		
+
+
+
+
+
 		if (Gamestatus == true) { 
 			if(gamemode == 3){
 			Time elapsed1 = clock1.getElapsedTime();
@@ -672,7 +674,7 @@ int main()
 			int minutes2 = static_cast<int>(countdownTime2) / 60;
 			int seconds2 = static_cast<int>(countdownTime2) % 60;
 			stringstream timeStream1;
-			timeStream1 << minutes1 << ":" << setw(2) << setfill('0') << seconds1;  // ใช้ setw ที่ seconds1
+			timeStream1 << minutes1 << ":" << setw(2) << setfill('0') << seconds1;   
 			stringstream timeStream2;
 			timeStream2 << minutes2 << ":" << setw(2) << setfill('0') << seconds2;
 
@@ -802,7 +804,7 @@ int main()
 
 
 		mode.deawtext(window, Gamestatus, shogi.moveHistory);
-		shogi.drawpromotecheck(window);
+		 shogi.drawpromotecheck(window);
 		if (!shogi.move)
 		{
 			shogi.diecount();
@@ -816,9 +818,9 @@ int main()
 			}
 		}
 		if (gamemode == 3&& Gamestatus) {
-			window.draw(textBorder1);  // วาดกรอบก่อนข้อความ
+			window.draw(textBorder1);   
 			window.draw(countdownText1);
-			window.draw(textBorder2);  // วาดกรอบก่อนข้อความ
+			window.draw(textBorder2);  
 			window.draw(countdownText2);
 		}
 		if (escnow) {
@@ -841,7 +843,7 @@ int main()
 		}
 
 
-		//cout << current<<showmove;
+		 
 
 
 		window.display();

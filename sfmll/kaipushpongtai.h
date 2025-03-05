@@ -32,5 +32,6 @@ public:
 	string whitewin = "asset/whitewin.png";
 	string menu_bg = "asset/backgroundhd.png";
 	string texnumber = "asset/number.png";
+	string promotettex = "asset/promote.png";
 
 };
