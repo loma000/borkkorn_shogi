@@ -26,7 +26,7 @@ void loopSound() {
 
 	while (keepPlaying) {
 		mciSendString(TEXT("play bgm from 0"), NULL, 0, NULL);
-		Sleep(286000); // Adjust based on file length
+		Sleep(286000);  
 	}
 
 	mciSendString(TEXT("close bgm"), NULL, 0, NULL);
@@ -58,11 +58,11 @@ int main()
 	board.loadFromFile(path.boards);
 	Sprite b(board);
 	b.setPosition(shogi.borderx, shogi.bordery);
-	//history and text
+	 
 	string movedPieceName;
 	string moveString;
 	string moveStringgam;
-	//mainmenu
+	 
 	Texture menu_bg;
 	menu_bg.loadFromFile(path.menu_bg);
 	Sprite menu_bgs;
@@ -74,7 +74,7 @@ int main()
 	textures[3].loadFromFile(path.tt4);
 	textures[4].loadFromFile(path.tt5);
 
-	//esc
+	 
 	bool escnow = false;
 	RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
 	overlay.setFillColor(Color(0, 0, 0, 128));
